@@ -20,14 +20,14 @@
                             </li>
                             <li>
                                 <a href="javascript:;" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i>注销</a>
+                                                     document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i>Logout</a>
                             </li>
                         @endauth
                         @guest
-                            <li><a href="#"><i class="fa fa-user"></i>游客</a></li>
-                            <li><a href="{{ url('login') }}?redirect_url={{ url()->current() }}"><i class="fa fa-lock"></i>登录</a>
+                            <li><a href="#"><i class="fa fa-user"></i>Guest</a></li>
+                            <li><a href="{{ url('login') }}?redirect_url={{ url()->current() }}"><i class="fa fa-lock"></i>Login</a>
                             </li>
-                            <li><a href="{{ url('register') }}"><i class="fa fa-user"></i>注册</a>
+                            <li><a href="{{ url('register') }}"><i class="fa fa-user"></i>Register</a>
                             </li>
                         @endguest
 

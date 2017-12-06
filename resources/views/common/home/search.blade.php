@@ -12,7 +12,7 @@
                     <div class="col-sm-8">
                         <form class="search-form" method="get" action="{{ url('/home/products/search') }}">
                             <div class="input-group">
-                                <input type="text" name="keyword" class="form-control input-lg search-input" placeholder="输入关键字 ..." required="required">
+                                <input type="text" name="keyword" class="form-control input-lg search-input" placeholder="Keyword..." required="required">
                                 <div class="input-group-btn">
                                     <div class="input-group">
                                         <div class="input-group-btn">
@@ -32,13 +32,13 @@
                                 <div>
                                     <span id="cart-number" class="cart-number">0</span>
                                 </div>
-                                <span class="title" id="car_title">购物车</span>
+                                <span class="title" id="car_title">Cart</span>
                             </a>
                         </div>
                         <div class="header-wishlist ml-20">
                             <a href="{{ url('/user/likes') }}">
                                 <span class="icon lnr lnr-heart font-30"></span>
-                                <span class="title">收藏列表</span>
+                                <span class="title">Collection</span>
                             </a>
                         </div>
                     </div>

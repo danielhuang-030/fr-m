@@ -1,1 +1,1 @@
-<div class="footer">Copyright 你的公司名称 gps</div>
+<div class="footer">Copyright &copy; {{ date('Y') }} . All rights {{ env('APP_NAME') }}.</div>
