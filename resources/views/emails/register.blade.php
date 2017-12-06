@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>账户激活</title>
+    <title>User Activation</title>
     <meta charset="utf-8" />
     <style type="text/css">
         .qmbox body {
@@ -126,29 +126,29 @@
 <div class="qmbox qm_con_body_content qqmail_webmail_only" id="mailContentContainer" style="">
 
     <div class="contaner">
-        <div class="title">星期一商城账户激活邮件</div>
+        <div class="title">User Activation</div>
         <div class="content">
-            <p class="biaoti"><b>欢迎你注册本网站的账户！</b></p>
+            <p class="biaoti"><b>Welcome to register this website user!</b></p>
             <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
             <div class="xboxcontent">
                 <div class="neirong">
-                    <p><b>亲爱的用户</b><span id="userName" class="font_darkblue">
-                            欢迎你：{{ $user->name }}
+                    <p><b>Dears</b><span id="userName" class="font_darkblue">
+                            Welcome：{{ $user->name }}
                         </span></p>
                     <p>
                         <span class="font_lightblue">
-                            <a href="{{ url('register/active') }}/{{ $user->active_token }}">请点击此链接激活账号</a>
+                            <a href="{{ url('register/active') }}/{{ $user->active_token }}">Please click this link to activate the user</a>
                         </span><br>
                         <span class="font_gray"></span></p>
-                    <div class="line">如果你链接不能跳转，请复制
-                        <span id="yzm" style="border-bottom: 1px dashed rgb(204, 204, 204); z-index: 1; position: static;"><pre>{{ url('register/active') }}/{{ $user->active_token }}</pre></span>到浏览器中
+                    <div class="line">If your link can not work, please copy
+                        <span id="yzm" style="border-bottom: 1px dashed rgb(204, 204, 204); z-index: 1; position: static;"><pre>{{ url('register/active') }}/{{ $user->active_token }}</pre></span> into the browser
                     </div>
                 </div>
             </div>
             <b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
-            <p class="foot">如果仍有问题，联系管理员:
+            <p class="foot">If you still have questions, contact the administrator:
                 <span  style="border-bottom: 1px dashed rgb(204, 204, 204);">
-                    <a href="mailto:1033404553@qq.com">1033404553@qq.com</a>
+                    <a href="mailto:daniel.huang@simplybridal.com">daniel.huang@simplybridal.com</a>
                 </span>
             </p>
         </div>

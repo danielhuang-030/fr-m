@@ -9,6 +9,7 @@ Route::namespace('Auth')->group(function(){
     // again send active link
     Route::get('/register/again/send/{id}', 'UserController@sendActiveMail');
 
+    /*
     // github,qq,weibo authorize login
     Route::get('/auth/github', 'AuthLoginController@redirectToGithub');
     Route::get('/auth/github/callback', 'AuthLoginController@handleGithubCallback');
@@ -16,6 +17,7 @@ Route::namespace('Auth')->group(function(){
     Route::get('/auth/qq/callback', 'AuthLoginController@handleQQCallback');
     Route::get('/auth/weibo', 'AuthLoginController@redirectToWeibo');
     Route::get('/auth/weibo/callback', 'AuthLoginController@handleWeiboCallback');
+    */
 });
 
 /**********  home  **********/

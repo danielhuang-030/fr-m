@@ -13,7 +13,7 @@ class ResetPassword extends Mailable
 
     protected $token;
 
-    public $subject = '重置密码';
+    public $subject = 'Reset Password';
     /**
      * Create a new message instance.
      *

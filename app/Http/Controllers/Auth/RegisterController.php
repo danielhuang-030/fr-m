@@ -58,7 +58,7 @@ class RegisterController extends Controller
         event(new Registered($user = $this->create($request->all())));
 
         return $this->registered($request, $user)
-            ?: redirect($this->redirectPath())->with('status', '注册成功');
+            ?: redirect($this->redirectPath())->with('status', 'Registration success');
     }
 
     /**
@@ -76,37 +76,35 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:50|unique:users',
-            'email' => 'required|string|email|max:50|unique:users',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
             'captcha' => 'required|captcha',
         ], [
-            'name.required' => '用户名不能为空',
-            'name.max' => '用户名不能超过50个字符',
-            'name.unique' => '用户名已经被占用',
-            'email.unique' => '邮箱已经被占用',
-            'email.required' => '邮箱不能为空',
-            'email.email' => '邮箱格式不正确',
-            'password.min' => '密码最少六位数',
-            'password.required' => '密码不能为空',
-            'password.confirmed' => '两次密码不一致',
-            'captcha.required' => '验证码不能为空',
-            'captcha.captcha' => '验证码不正确',
+            'name.required' => 'Username can not be empty',
+            'name.max' => 'Username can not over 255 characters',
+            'email.unique' => 'Email has been used',
+            'email.required' => 'Email can not be empty',
+            'email.email' => 'Email format is incorrect',
+            'password.min' => 'Password at least 6 characters',
+            'password.required' => 'Password can not be empty',
+            'password.confirmed' => 'Inconsistent Password',
+            'captcha.required' => 'Verification Code can not be empty',
+            'captcha.captcha' => 'Verification Code is incorrect',
         ]);
     }
 
     protected function create(array $data)
     {
-        $faker = Factory::create();
+        // $faker = Factory::create();
 
         // email_active,
-        return  User::create([
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'sex' => $data['sex'],
             'password' => bcrypt($data['password']),
             'active_token' => str_random(60),
-            'avatar' => $faker->imageUrl(120, 120)
+            // 'avatar' => $faker->imageUrl(120, 120)
         ]);
 
     }

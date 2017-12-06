@@ -14,7 +14,7 @@ class UserRegister extends Mailable
 
     public $user;
 
-    public $subject = '注册邮件';
+    public $subject = 'Registration Success';
 
     /**
      * Create a new message instance.

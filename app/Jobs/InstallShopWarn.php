@@ -40,7 +40,6 @@ class InstallShopWarn implements ShouldQueue
         Log::info($msg);
 
         // 注册成功发送邮件加入队列
-        Mail::to('1033404553@qq.com')
-            ->queue(new UserRegister($this->user));
+        // Mail::to('1033404553@qq.com')->queue(new UserRegister($this->user));
     }
 }
