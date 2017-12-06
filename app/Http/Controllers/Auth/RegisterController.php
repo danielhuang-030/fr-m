@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\UserRegister;
 use App\Models\User;
-use Faker\Factory;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -33,18 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        // $this->middleware('guest');
-    }
-
+    protected $redirectTo = '/login';
 
     /**
      * 核心注册方法
@@ -68,21 +55,20 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        Mail::to($user->email)
-            ->queue(new UserRegister($user));
+        Mail::to($user->email)->send(new UserRegister($user));
     }
-
 
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:5|confirmed',
             'captcha' => 'required|captcha',
         ], [
             'name.required' => 'Username can not be empty',
             'name.max' => 'Username can not over 255 characters',
+            'name.unique' => 'Username has been used',
             'email.unique' => 'Email has been used',
             'email.required' => 'Email can not be empty',
             'email.email' => 'Email format is incorrect',
@@ -108,11 +94,5 @@ class RegisterController extends Controller
         ]);
 
     }
-
-    protected function redirectTo()
-    {
-        return 'register';
-    }
-
 
 }

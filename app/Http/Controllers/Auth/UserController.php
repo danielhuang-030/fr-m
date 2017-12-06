@@ -29,14 +29,11 @@ class UserController extends Controller
     public function sendActiveMail($id)
     {
         if ($user = User::find($id)) {
-            //  again send active link, join queue
-            Mail::to($user->email)
-                ->queue(new UserRegister($user));
-
-            return view('hint.success', ['status' => '发送邮件成功', 'url' => route('login')]);
-
+            // again send active link, join queue
+            Mail::to($user->email)->send(new UserRegister($user));
+            return view('hint.success', ['status' => 'Sending mail is successful', 'url' => route('login')]);
         }
 
-        return view('hint.error', ['status' => '用户名或者密码错误']);
+        return view('hint.error', ['status' => 'Username or password is incorrect']);
     }
 }
