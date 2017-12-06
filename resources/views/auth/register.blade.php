@@ -17,7 +17,7 @@
                 @endif
 
                 <section class="sign-area panel p-40">
-                    <h3 class="sign-title">注册 <small>Or <a href="{{ route('login') }}" class="color-green">登录</a></small></h3>
+                    <h3 class="sign-title">Register <small>Or <a href="{{ route('login') }}" class="color-green">Login</a></small></h3>
                     <div class="row row-rl-0">
                         <div class="col-sm-6 col-md-7 col-left">
                             <form class="p-40" id="register_form" method="post" action="{{ route('register') }}">
@@ -25,8 +25,8 @@
                                 {{ csrf_field() }}
 
                                 <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
-                                    <label class="sr-only">用户名</label>
-                                    <input type="text" class="form-control input-lg" placeholder="用户名" name="name" value="{{ old('name') }}" required autofocus>
+                                    <label class="sr-only">Username</label>
+                                    <input type="text" class="form-control input-lg" placeholder="Username" name="name" value="{{ old('name') }}" required autofocus>
                                     @if ($errors->has('name'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('name') }}</strong>
@@ -35,8 +35,8 @@
                                 </div>
 
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                                    <label class="sr-only">邮箱</label>
-                                    <input type="email" class="form-control input-lg" placeholder="邮箱" name="email" value="{{ old('email') }}" required>
+                                    <label class="sr-only">Email</label>
+                                    <input type="email" class="form-control input-lg" placeholder="Email" name="email" value="{{ old('email') }}" required>
 
                                     @if ($errors->has('email'))
                                         <span class="help-block">
@@ -45,27 +45,10 @@
                                     @endif
 
                                 </div>
-                                <div class="form-group custom-radio {{ $errors->has('email') ? ' has-error' : '' }}">
-                                    <label class="sr-only">性别</label>
-                                    <div style="display: inline-block">
-                                        <input type="radio" class="" id="sex_man" name="sex" value="1" checked>
-                                        <label class="color-mid" for="sex_man">
-                                            男
-                                        </label>
-                                    </div>
-                                    <div style="display: inline-block; padding-left: 30px;">
-                                        <input type="radio" id="sex_human" value="0" name="sex" >
-                                        <label class="color-mid" for="sex_human">
-                                            女
-                                        </label>
-                                    </div>
-
-                                </div>
-
 
                                 <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }}">
-                                    <label class="sr-only">密码</label>
-                                    <input type="password" class="form-control input-lg" placeholder="密码" name="password" required>
+                                    <label class="sr-only">Password</label>
+                                    <input type="password" class="form-control input-lg" placeholder="Password" name="password" required>
                                     @if ($errors->has('password'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('password') }}</strong>
@@ -74,18 +57,17 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="sr-only">确认密码</label>
-                                    <input type="password" class="form-control input-lg" placeholder="确认密码" name="password_confirmation" required>
+                                    <label class="sr-only">Password Confirm</label>
+                                    <input type="password" class="form-control input-lg" placeholder="Password Confirm" name="password_confirmation" required>
                                 </div>
 
                                 <div class="form-group{{ $errors->has('captcha') ? ' has-error' : '' }}">
-                                        <label class="sr-only">验证码</label>
+                                        <label class="sr-only">Verification Code</label>
 
                                         <div style="position: relative;">
-                                            <input width="50px" id="text" maxlength="4" type="text" class="form-control input-lg" name="captcha" placeholder="验证码" required>
-                                            <img style="position: absolute;top: 0; right: 0; cursor: pointer;" src="{{captcha_src()}}" onclick="this.src='{{ url("captcha/default") }}?'+Math.random()" alt="验证码" id="captcha">
+                                            <input width="50px" id="text" maxlength="4" type="text" class="form-control input-lg" name="captcha" placeholder="Verification Code" required>
+                                            <img style="position: absolute;top: 0; right: 0; cursor: pointer;" src="{{captcha_src()}}" onclick="this.src='{{ url("captcha/default") }}?'+Math.random()" alt="Verification Code" id="captcha">
                                         </div>
-
 
                                         @if ($errors->has('captcha'))
                                             <div class="has-error">
@@ -100,33 +82,35 @@
                                 <div class="custom-checkbox mb-20">
                                     <input type="checkbox" id="agree_terms">
                                     <label class="color-mid" for="agree_terms">
-                                        我同意
-                                        <a href="#" class="color-green" target="_blank">MondayShop隐私声明</a>
+                                        I agree
+                                        <a href="#" class="color-green" target="_blank">the privacy</a>
                                     </label>
                                     <span class="has-error">
                                         <strong id="checkbox_text" class="help-block"></strong>
                                     </span>
                                 </div>
-                                <button type="submit" class="btn btn-block btn-lg">注  册</button>
+                                <button type="submit" class="btn btn-block btn-lg">Register</button>
                             </form>
                             <span class="or">Or</span>
                         </div>
+                        <?php /*
                         <div class="col-sm-6 col-md-5 col-right">
                             <div class="social-login p-40">
                                 <div class="mb-20">
-                                    <a href="{{ url('/auth/github') }}" class="btn btn-lg btn-block btn-social btn-facebook"><i class="fa  fa-github"></i>登录 Github</a>
+                                    <a href="{{ url('/auth/github') }}" class="btn btn-lg btn-block btn-social btn-facebook"><i class="fa  fa-github"></i>Login Github</a>
                                 </div>
                                 <div class="mb-20">
-                                    <a href="{{ url('/auth/qq') }}" class="btn btn-lg btn-block btn-social btn-twitter"><i class="fa fa-qq"></i>登录  QQ</a>
+                                    <a href="{{ url('/auth/qq') }}" class="btn btn-lg btn-block btn-social btn-twitter"><i class="fa fa-qq"></i>Login  QQ</a>
                                 </div>
                                 <div class="mb-20">
-                                    <a href="{{ url('/auth/weibo') }}" class="btn btn-lg btn-block btn-social btn-google-plus"><i class="fa fa-weibo"></i>登录  微博</a>
+                                    <a href="{{ url('/auth/weibo') }}" class="btn btn-lg btn-block btn-social btn-google-plus"><i class="fa fa-weibo"></i>Login  微博</a>
                                 </div>
                                 <div class="text-center color-mid">
-                                    已经有账号 ? <a href="{{ route('login') }}" class="color-green">登录</a>
+                                    已经有账号 ? <a href="{{ route('login') }}" class="color-green">Login</a>
                                 </div>
                             </div>
                         </div>
+                        */ ?>
                     </div>
                 </section>
             </div>
@@ -136,22 +120,21 @@
     </main>
 @endsection
 
-
 @section('script')
     <script>
-        $('#register_form').submit(function(){
+    $('#register_form').submit(function() {
 
-            if(! $('#agree_terms').is(':checked')) {
-                $('#checkbox_text').text('请同意MondayShop隐私声明');
+        if(!$('#agree_terms').is(':checked')) {
+            $('#checkbox_text').text('Please agree the privacy');
 
-                setTimeout(function(){
-                    $('#checkbox_text').text('');
-                }, 3000);
+            setTimeout(function(){
+                $('#checkbox_text').text('');
+            }, 3000);
 
-                return false;
-            }
+            return false;
+        }
 
-            return true;
-        });
+        return true;
+    });
     </script>
 @endsection
