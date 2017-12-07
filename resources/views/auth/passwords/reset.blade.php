@@ -6,7 +6,7 @@
             <div class="container">
 
                 <section class="sign-area panel p-40">
-                    <h3 class="sign-title">重置密码</h3>
+                    <h3 class="sign-title">Reset Password</h3>
                     <div class="row row-rl-0">
                         <div class="col-sm-6 col-md-7 col-left">
                             <form class="p-40 form-horizontal" method="POST" action="{{ route('password.request') }}">
@@ -16,8 +16,8 @@
                                 <input type="hidden" name="token" value="{{ $token }}">
 
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                                    <label class="sr-only">用户名/邮箱</label>
-                                    <input type="text" class="form-control input-lg" name="email" value="{{ $email or old('email') }}" placeholder="邮箱" required>
+                                    <label class="sr-only">Email</label>
+                                    <input type="text" class="form-control input-lg" name="email" value="{{ $email or old('email') }}" placeholder="Email" required>
                                     @if ($errors->has('email'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('email') }}</strong>
@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }}">
                                     <label class="sr-only">Password</label>
-                                    <input type="password" class="form-control input-lg" name="password" placeholder="新密码" required>
+                                    <input type="password" class="form-control input-lg" name="password" placeholder="Password" required>
                                     @if ($errors->has('password'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('password') }}</strong>
@@ -35,8 +35,8 @@
 
                                 </div>
                                 <div class="form-group {{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                                    <label class="sr-only">Password</label>
-                                    <input type="password" class="form-control input-lg" name="password_confirmation" placeholder="确认密码" required>
+                                    <label class="sr-only">Password Confirm</label>
+                                    <input type="password" class="form-control input-lg" name="password_confirmation" placeholder="Password Confirm" required>
                                     @if ($errors->has('password_confirmation'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('password_confirmation') }}</strong>
@@ -45,10 +45,12 @@
 
                                 </div>
 
-                                <button type="submit" class="btn btn-block btn-lg">修改密码</button>
+                                <button type="submit" class="btn btn-block btn-lg">Reset Password</button>
                             </form>
-                            <span class="or">Or</span>
+                            <?php /*<span class="or">Or</span>*/ ?>
                         </div>
+
+                        <?php /*
                         <div class="col-sm-6 col-md-5 col-right">
                             <div class="social-login p-40">
                                 <div class="mb-20">
@@ -65,6 +67,7 @@
                                 </div>
                             </div>
                         </div>
+                        */ ?>
                     </div>
                 </section>
             </div>

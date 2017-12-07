@@ -91,7 +91,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-block btn-lg">Register</button>
                             </form>
-                            <span class="or">Or</span>
+                            <?php /*<span class="or">Or</span>*/ ?>
                         </div>
                         <?php /*
                         <div class="col-sm-6 col-md-5 col-right">

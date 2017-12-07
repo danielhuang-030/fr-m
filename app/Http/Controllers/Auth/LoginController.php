@@ -129,9 +129,9 @@ class LoginController extends Controller
             $this->username() => 'required|string',
             'password' => 'required|string',
         ], [
-            $this->username() . '.required' => '账号不能为空',
-            $this->username() . '.string' => '账号必须是正确的字符串',
-            'password.required' => '密码不能为空'
+            $this->username() . '.required' => 'Username/Email can not be empty',
+            $this->username() . '.string' => 'Username/Email must be string',
+            'password.required' => 'Password can not be empty'
         ]);
     }
 

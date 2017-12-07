@@ -63,7 +63,6 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        Mail::to($this->email)
-            ->queue(new ResetPassword($token));
+        Mail::to($this->email)->send(new ResetPassword($token));
     }
 }

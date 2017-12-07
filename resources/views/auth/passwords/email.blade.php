@@ -7,7 +7,7 @@
 
 
                 <section class="sign-area panel p-40">
-                    <h3 class="sign-title">找回密码</h3>
+                    <h3 class="sign-title">Forget Password</h3>
                     <div class="row row-rl-0">
                         <div class="col-sm-6 col-md-7 col-left">
                             <form class="p-40 form-horizontal" method="POST" action="{{ route('password.email') }}">
@@ -21,8 +21,8 @@
                                 @endif
 
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                                    <label class="sr-only">邮箱</label>
-                                    <input type="text" class="form-control input-lg" name="email" value="{{ old('email') }}" placeholder="邮箱" required>
+                                    <label class="sr-only">Email</label>
+                                    <input type="text" class="form-control input-lg" name="email" value="{{ old('email') }}" placeholder="Email" required>
                                     @if ($errors->has('email'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('email') }}</strong>
@@ -30,12 +30,12 @@
                                     @endif
                                 </div>
 
-                                <button type="submit" class="btn btn-block btn-lg">找回密码</button>
+                                <button type="submit" class="btn btn-block btn-lg">Forget Password</button>
                             </form>
-                            <span class="or">Or</span>
+                            <?php /*<span class="or">Or</span>*/ ?>
                         </div>
 
-
+                        <?php /*
                         <div class="col-sm-6 col-md-5 col-right">
                             <div class="social-login p-40">
                                 <div class="mb-20">
@@ -53,6 +53,7 @@
                                 </div>
                             </div>
                         </div>
+                        */ ?>
                     </div>
                 </section>
             </div>

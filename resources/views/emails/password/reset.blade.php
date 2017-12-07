@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>修改密码</title>
+    <title>Reset Password</title>
     <meta charset="utf-8" />
     <style type="text/css">
         .qmbox body {
@@ -126,25 +126,25 @@
 <div class="qmbox qm_con_body_content qqmail_webmail_only" id="mailContentContainer" style="">
 
     <div class="contaner">
-        <div class="title">星期一商城账户修改密码邮件</div>
+        <div class="title">Reset Password</div>
         <div class="content">
-            <p class="biaoti"><b>你需要修改账号密码！</b></p>
+            <p class="biaoti"><b>You need to reset the account password!</b></p>
             <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
             <div class="xboxcontent">
                 <div class="neirong">
                         <span class="font_lightblue">
-                            <a href="{{ $url }}">点击此修改密码</a>
+                            <a href="{{ $url }}">Click here to reset your password</a>
                         </span><br>
                         <span class="font_gray"></span></p>
-                    <div class="line">如果你链接不能跳转，请复制
-                        <span id="yzm" style="border-bottom: 1px dashed rgb(204, 204, 204); z-index: 1; position: static;"><pre>{{ $url }}</pre></span>到浏览器中
+                    <div class="line">If your link can not work, please copy
+                        <span id="yzm" style="border-bottom: 1px dashed rgb(204, 204, 204); z-index: 1; position: static;"><pre>{{ $url }}</pre></span> into the browser
                     </div>
                 </div>
             </div>
             <b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
-            <p class="foot">如果仍有问题，联系管理员:
+            <p class="foot">If you still have questions, contact the administrator:
                 <span  style="border-bottom: 1px dashed rgb(204, 204, 204);">
-                    <a href="mailto:1033404553@qq.com">1033404553@qq.com</a>
+                    <a href="mailto: {{ env('MAIL_FROM_ADDRESS') }}">{{ env('MAIL_FROM_ADDRESS') }}</a>
                 </span>
             </p>
         </div>

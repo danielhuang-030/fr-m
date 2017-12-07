@@ -132,8 +132,8 @@
             <b class="xtop"><b class="xb1"></b><b class="xb2"></b><b class="xb3"></b><b class="xb4"></b></b>
             <div class="xboxcontent">
                 <div class="neirong">
-                    <p><b>Dears</b><span id="userName" class="font_darkblue">
-                            Welcome：{{ $user->name }}
+                    <p><b>Welcome</b><span id="userName" class="font_darkblue">
+                            {{ $user->name }}
                         </span></p>
                     <p>
                         <span class="font_lightblue">
@@ -148,7 +148,7 @@
             <b class="xbottom"><b class="xb4"></b><b class="xb3"></b><b class="xb2"></b><b class="xb1"></b></b>
             <p class="foot">If you still have questions, contact the administrator:
                 <span  style="border-bottom: 1px dashed rgb(204, 204, 204);">
-                    <a href="mailto:daniel.huang@simplybridal.com">daniel.huang@simplybridal.com</a>
+                    <a href="mailto: {{ env('MAIL_FROM_ADDRESS') }}">{{ env('MAIL_FROM_ADDRESS') }}</a>
                 </span>
             </p>
         </div>

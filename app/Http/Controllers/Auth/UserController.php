@@ -20,9 +20,9 @@ class UserController extends Controller
             $user->active_token = str_random(60);
             $user->save();
 
-            return view('hint.success', ['status' => "{$user->name} 账户激活成功！", 'url' => url('login')]);
+            return view('hint.success', ['status' => "{$user->name} activation succeeded!", 'url' => url('login')]);
         } else {
-            return view('hint.error', ['status' => '无效的token']);
+            return view('hint.error', ['status' => 'Invalid token']);
         }
     }
 
