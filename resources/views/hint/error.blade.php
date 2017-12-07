@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>跳转提示</title>
+    <title>Redirect Hint</title>
     <style type="text/css">
         * { padding: 0; margin: 0; }
         body { background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; text-align: center;}
@@ -25,8 +25,8 @@
     <h1>×</h1>
     <p class="error">{{ $status }}</p>
     <p class="detail"></p>
-    <p class="jump">页面自动
-        <a id="href" href="{{ $url or url('/') }}">跳转</a>等待时间：
+    <p class="jump">Auto redirect to
+        <a id="href" href="{{ $url or url('/') }}">this page</a> Wait:
         <b id="wait">3</b></p>
 </div>
 <script type="text/javascript">(function() {
