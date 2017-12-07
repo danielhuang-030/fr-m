@@ -38,7 +38,7 @@ class ModifyUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('name', 50)->change();
             $table->string('email', 50)->change();
-            $table->string('avatar')->nullable(false)->change();
+            // $table->string('avatar')->nullable(false)->change();
 
             $table->tinyInteger('sex')->after('name')->default(1)->commen('1为男，0为女');
             $table->integer('github_id')->after('login_count')->nullable()->index()->comment('github第三方登录的ID');
