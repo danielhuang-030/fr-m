@@ -7,7 +7,7 @@ class UserPresenter
     public function getAvatarLink($link)
     {
         if (empty($link)) {
-            $link = sprintf('%s/storage/images/avatar.png', config('app.url'));
+            $link = sprintf('%s/images/avatar.png', config('app.url'));
         }
         return starts_with($link, 'http') ? $link : sprintf('%s/storage/%s', config('app.url'), $link);
     }
