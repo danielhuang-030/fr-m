@@ -2,18 +2,20 @@
 
 namespace App\Presenters;
 
-
 class UserPresenter
 {
     public function getAvatarLink($link)
     {
-        return starts_with($link, 'http') ? $link : "/storage/{$link}";
+        if (empty($link)) {
+            $link = sprintf('%s/storage/images/avatar.png', config('app.url'));
+        }
+        return starts_with($link, 'http') ? $link : sprintf('%s/storage/%s', config('app.url'), $link);
     }
 
     public function getStatusSpan($status)
     {
         $class = $this->isActive($status) ? 'label-success' : 'label-info';
-        $span = $this->isActive($status) ? '已激活' : '未激活';
+        $span = $this->isActive($status) ? 'activated' : 'deactivated';
 
         $html = <<<html
 <span class="label {$class}">{$span}</span>
@@ -24,7 +26,7 @@ html;
 
     public function getThumbLink($link)
     {
-        return starts_with($link, 'http') ? $link : "/storage/{$link}";
+        return starts_with($link, 'http') ? $link : sprintf('%s/storage/%s', config('app.url'), $link);
     }
 
     public function getHiddenPartName($name)

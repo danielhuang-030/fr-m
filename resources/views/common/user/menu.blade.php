@@ -1,21 +1,22 @@
 <aside class="menu">
     <ul>
         <li class="person active">
-            <a href="{{ url('/user') }}">个人中心</a>
+            <a href="{{ url('/user') }}">Member</a>
         </li>
         <li class="person">
             <ul>
-                <li> <a href="{{ url('/user/setting') }}">个人信息</a></li>
-                <li> <a href="{{ url('/user/password') }}">修改密码</a></li>
-                <li> <a href="{{ url('/user/addresses') }}">收货地址</a></li>
+                <li> <a href="{{ url('/user/setting') }}">Member</a></li>
+                <li> <a href="{{ url('/user/password') }}">Password</a></li>
+                <li> <a href="{{ url('/user/addresses') }}">Address</a></li>
             </ul>
         </li>
         <li class="person">
-            <a href="#">我的交易</a>
             <ul>
-                <li><a href="{{ url('user/orders') }}">订单管理</a></li>
+                <li><a href="{{ url('user/orders') }}">Order</a></li>
             </ul>
         </li>
+
+        <?php /*
         <li class="person">
             <a href="#">我的小窝</a>
             <ul>
@@ -25,7 +26,7 @@
                 <li> <a href="news.html">消息</a></li>
             </ul>
         </li>
-
+        */ ?>
     </ul>
 
 </aside>

@@ -24,7 +24,7 @@
                             </div>
                             -->
                             <div class="m-address">
-                                <a href="{{ url('/user/addresses') }}" class="i-trigger">我的收货地址</a>
+                                <a href="{{ url('/user/addresses') }}" class="i-trigger">Address</a>
                             </div>
                         </div>
                     </div>
@@ -35,13 +35,13 @@
                 <!--订单 -->
                 <div class="m-order">
                     <div class="s-bar">
-                        <i class="s-icon"></i>我的订单
-                        <a class="i-load-more-item-shadow" href="{{ url('/user/orders') }}">全部订单</a>
+                        <i class="s-icon"></i>Order
+                        <a class="i-load-more-item-shadow" href="{{ url('/user/orders') }}">Orders</a>
                     </div>
                     <ul>
-                        <li><a href="{{ url('/home/cars') }}"><i><img src="{{ asset('assets/user/images/send.png') }}"/></i><span>购物车<em class="m-num">{{ $user->cars->count() }}</em></span></a></li>
+                        <li><a href="{{ url('/home/cars') }}"><i><img src="{{ asset('assets/user/images/send.png') }}"/></i><span>Cart<em class="m-num">{{ $user->cars->count() }}</em></span></a></li>
 
-                        <li><a href="{{ url('/home/orders') }}"><i><img src="{{ asset('assets/user/images/refund.png') }}"/></i><span>订单<em class="m-num">{{ $user->orders->count() }}</em></span></a></li>
+                        <li><a href="{{ url('/home/orders') }}"><i><img src="{{ asset('assets/user/images/refund.png') }}"/></i><span>Order<em class="m-num">{{ $user->orders->count() }}</em></span></a></li>
                     </ul>
                 </div>
 
@@ -49,7 +49,7 @@
                 <div class="m-logistics">
 
                     <div class="s-bar">
-                        <i class="s-icon"></i>订单
+                        <i class="s-icon"></i>Order
                     </div>
                     <div class="s-content">
                         <ul class="lg-list">
@@ -58,11 +58,11 @@
                                 <li class="lg-item">
                                     <div class="lg-info">
 
-                                        <p>订单号：{{ $order->uuid }}</p>
+                                        <p>Order NO：{{ $order->uuid }}</p>
                                         <time>{{ $order->created_at }}</time>
                                     </div>
                                     <div class="lg-confirm">
-                                        <a class="i-btn-typical" href="{{ url("/user/orders/{$order->id}") }}">查看详细信息</a>
+                                        <a class="i-btn-typical" href="{{ url("/user/orders/{$order->id}") }}">Detail</a>
                                     </div>
                                 </li>
                                 <div class="clear"></div>
@@ -74,6 +74,7 @@
 
                 </div>
 
+                <?php /*
                 <!--收藏夹 -->
                 <div class="you-like">
                     <div class="s-bar">我的收藏
@@ -219,6 +220,7 @@
                     <div class="s-more-btn i-load-more-item" data-screen="0"><i class="am-icon-refresh am-icon-fw"></i>更多</div>
 
                 </div>
+                */ ?>
 
             </div>
         </div>

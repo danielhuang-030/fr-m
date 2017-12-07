@@ -81,16 +81,16 @@
                         <div class="error-page-footer">
                             <h5 class="color-mid mb-5">Oops !</h5>
                             <h2 class="t-uppercase m-10 color-green">
-                                {{ $exception->getMessage()  ? $exception->getMessage() : '您访问的页面不存在~ '}}
+                                {{ $exception->getMessage()  ? $exception->getMessage() : 'The page you are visiting does not exist'}}
                             </h2>
                             <p class="color-muted mb-30 font-15">
-                                不好意思
+                                SORRY
                             </p>
                         </div>
-                        <a  href="javascript:;" onclick="history.go(-1)" class="btn btn-rounded">返回上一页</a>
+                        <a  href="javascript:;" onclick="history.go(-1)" class="btn btn-rounded">back to the last page</a>
 
                         <!-- 判断当前路由是否是后台的 -->
-                        <a href="{{ str_contains(url()->current(), 'admin') ? url('/admin/welcome') : url('/') }}" class="btn btn-rounded">去首页</a>
+                        <a href="{{ str_contains(url()->current(), 'admin') ? url('/admin/welcome') : url('/') }}" class="btn btn-rounded">Home</a>
                     </div>
                 </div>
             </section>
