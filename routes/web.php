@@ -32,6 +32,8 @@ Route::prefix('home')->namespace('Home')->group(function(){
     Route::resource('/categories', 'CategoriesController', ['only' => ['index', 'show']]);
     Route::resource('/products', 'ProductsController', ['only' => ['index', 'show']]);
     Route::resource('cars', 'CarsController');
+
+    Route::resource('/books', 'BooksController', ['only' => ['index', 'show']]);
 });
 
 /**********  user  **********/

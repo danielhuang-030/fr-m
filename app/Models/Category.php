@@ -9,8 +9,7 @@ class Category extends Model
     use NodeTrait;
 
     protected $table = 'categories';
-
-    protected $fillable = ['name', 'parent_id', 'pinyin', 'description', 'thumb'];
+    protected $guarded = ['id'];
 
 
     public function products()
