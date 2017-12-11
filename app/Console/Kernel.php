@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        /*
         $schedule->call(function(){
 
             // each all subscriber notices
@@ -37,6 +38,7 @@ class Kernel extends ConsoleKernel
 
             // why every minute, because i use windows, The planned task under windows is minimal and can run only once in five minutes
         })->everyMinute();
+        */
     }
 
     /**
