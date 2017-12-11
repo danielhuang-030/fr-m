@@ -16,41 +16,37 @@
 			</div>
 			<hr/>
 			<ul class="am-avg-sm-1 am-avg-md-3 am-thumbnails">
-
-                @foreach ($addresses as $add)
-                    <li class="user-addresslist {{ $add->is_default ? 'defaultAddr' : '' }}">
-                         <span class="new-option-r default_addr" data-id="{{ $address->id }}">
-                            <i class="am-icon-check-circle"></i>默认地址
-                        </span>
+            @inject("addressPersenter", 'App\Presenters\AddressPresenter')
+                @foreach ($addresses as $address)
+                    <li class="user-addresslist {{ $address->is_default ? 'defaultAddr' : '' }}">
                         <p class="new-tit new-p-re">
-                            <span class="new-txt">{{ $add->name }}</span>
-                            <span class="new-txt-rd2">{{ $add->phone }}</span>
+                            <span class="new-txt">{{ $address->first_name }} {{ $address->last_name }}</span>
+                            <span class="new-txt-rd2">{{ $address->phone }}</span>
                         </p>
                         <div class="new-mu_l2a new-p-re">
                             <p class="new-mu_l2cw">
-                                <span class="title">地址：</span>
-                                <span class="province">{{ $add->province }}</span>省
-                                <span class="city">{{ $add->city }}</span>市
-                                <span class="dist">{{ $add->region }}</span>区
+                                <span class="title">address</span>
+                                <span class="zipcode">{{ $address->zipcode }}</span>
+                                <span class="state">{{ $addressPersenter->getStateName($address) }}</span>
+                                <span class="city">{{ $address->city }}</span>
                                 <br>
-                                <span class="street">{{ $add->detail_address }}</span></p>
+                                <span class="street">{{ $address->addr }}</span></p>
                         </div>
                         <div class="new-addr-btn">
-                            <a href="{{ url("/user/addresses/{$add->id}/edit") }}"><i class="am-icon-edit"></i>编辑</a>
+                            <a href="{{ url("/user/addresses/{$address->id}/edit") }}"><i class="am-icon-edit"></i>Edit</a>
                             <span class="new-addr-bar">|</span>
-                            <a href="javascript:;" data-id="{{ $add->id }}" class="delete_address">
-                                <i class="am-icon-trash"></i>删除
+                            <a href="javascript:;" data-id="{{ $address->id }}" class="delete_address">
+                                <i class="am-icon-trash"></i>Delete
                             </a>
                         </div>
                     </li>
                 @endforeach
 
-
 			</ul>
 			<div class="clear"></div>
 
 
-			<a class="new-abtn-type" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0}">修改地址</a>
+			<a class="new-abtn-type" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0}">Edit</a>
 			<!--例子-->
 
 
@@ -61,7 +57,7 @@
 
                         <!--标题 -->
                         <div class="am-cf am-padding">
-                            <div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">新增地址</strong> / <small>update&nbsp;address</small></div>
+                            <div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">edit&nbsp;address</strong></div>
                         </div>
                         <hr/>
 
@@ -87,47 +83,56 @@
                                 {{ method_field('PUT') }}
 
                                 <div class="am-form-group">
-                                    <label for="user-name" class="am-form-label">收货人</label>
+                                    <label for="first_name" class="am-form-label">First Name</label>
                                     <div class="am-form-content">
-                                        <input type="text" id="user-name" name="name" value="{{ $address->name }}" placeholder="收货人">
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label for="user-phone" class="am-form-label">手机号码</label>
-                                    <div class="am-form-content">
-                                        <input id="user-phone" name="phone" value="{{ $address->phone }}" placeholder="手机号必填" type="text" maxlength="11">
+                                        <input type="text" id="first_name" name="first_name" value="{{ $address->first_name }}" placeholder="First Name">
                                     </div>
                                 </div>
                                 <div class="am-form-group">
-                                    <label for="user-address" class="am-form-label">所在地</label>
-                                    <div class="am-form-content address">
-                                        <select name="province" data-am-selected>
-                                            <option value="浙江省">浙江省</option>
-                                            <option value="湖北省" selected>湖北省</option>
-                                        </select>
-                                        <select name="city" data-am-selected>
-                                            <option value="温州市">温州市</option>
-                                            <option value="武汉市" selected>武汉市</option>
-                                        </select>
-                                        <select name="region" data-am-selected>
-                                            <option value="瑞安区">瑞安区</option>
-                                            <option value="洪山区" selected>洪山区</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="am-form-group">
-                                    <label for="user-intro" class="am-form-label">详细地址</label>
+                                    <label for="last_name" class="am-form-label">Last Name</label>
                                     <div class="am-form-content">
-                                        <textarea name="detail_address" class="" rows="3" id="user-intro" placeholder="输入详细地址">{{ $address->detail_address }}</textarea>
-                                        <small>100字以内写出你的详细地址...</small>
+                                        <input type="text" id="last_name" name="last_name" value="{{ $address->last_name }}" placeholder="Last Name">
                                     </div>
                                 </div>
-
+                                <div class="am-form-group">
+                                    <label for="phone" class="am-form-label">Phone</label>
+                                    <div class="am-form-content">
+                                        <input id="phone" name="phone" value="{{ $address->phone }}" placeholder="Phone" type="text" maxlength="11">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="zipcode" class="am-form-label">Zipcode</label>
+                                    <div class="am-form-content">
+                                        <input id="zipcode" name="zipcode" value="{{ $address->zipcode }}" placeholder="Zipcode" type="text" maxlength="11">
+                                    </div>
+                                </div>
+                                <input name="country" type="hidden" value="US">
+                                <div class="am-form-group">
+                                    <label for="state_id" class="am-form-label">States</label>
+                                    <div class="am-form-content">
+                                        <select id="state_id" name="state_id">
+                                            @foreach ($states as $state)
+                                                <option value="{{ $state->id }}"@if ($state->id == $address->state_id) selected="selected" @endif>{{ $state->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="city" class="am-form-label">City</label>
+                                    <div class="am-form-content">
+                                         <input id="city" name="city" value="{{ $address->city }}" placeholder="City" type="text">
+                                    </div>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="addr" class="am-form-label">Addr</label>
+                                    <div class="am-form-content">
+                                        <textarea id="addr" name="addr" rows="3" id="user-intro" placeholder="Addr">{{ $address->addr }}</textarea>
+                                        <small></small>
+                                    </div>
+                                </div>
                                 <div class="am-form-group">
                                     <div class="am-u-sm-9 am-u-sm-push-3">
-                                        <button class="am-btn am-btn-danger">修改</button>
+                                        <button class="am-btn am-btn-danger">Edit</button>
                                     </div>
                                 </div>
                             </form>
@@ -172,7 +177,9 @@
                     that.parent().parent().remove();
                 }
 
+
                 layer.msg(res.msg);
+                location.href = "{{ url('/user/addresses') }}";
             });
         });
     </script>

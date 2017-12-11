@@ -14,13 +14,12 @@ class CreateStatesTable extends Migration
      */
     public function up()
     {
-        /*
         Schema::create('states', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name', 50);
             $table->char('code', 3);
-        });*/
+        });
 
         // seeds
         $data = file_get_contents(__DIR__ . '/../seeds/data/states.json');
