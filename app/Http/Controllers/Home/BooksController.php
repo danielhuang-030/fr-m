@@ -11,6 +11,10 @@ class BooksController extends Controller
 {
     public function index(Request $request)
     {
+        $slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Author::class, 'slug', 'Jeff-Kinney');
+        dd($slug);
+
+
         $model = new \App\Models\Book();
 //        $book = $model->orWhereHas('authors', function($query) {
 //            $query->where('name', 'like', 'jeff%');

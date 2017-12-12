@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
+
 class Book extends Model
 {
+    use Sluggable;
+
     protected $table = 'books';
     protected $guarded = ['id'];
 
