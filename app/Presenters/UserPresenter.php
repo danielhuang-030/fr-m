@@ -9,7 +9,7 @@ class UserPresenter
         if (empty($link)) {
             $link = sprintf('%s/images/avatar.png', config('app.url'));
         }
-        return starts_with($link, 'http') ? $link : sprintf('%s/storage/%s', config('app.url'), $link);
+        return starts_with($link, 'http') ? $link : Storage::disk('public')->url($link);
     }
 
     public function getStatusSpan($status)
@@ -26,7 +26,7 @@ html;
 
     public function getThumbLink($link)
     {
-        return starts_with($link, 'http') ? $link : sprintf('%s/storage/%s', config('app.url'), $link);
+        return starts_with($link, 'http') ? $link : Storage::disk('public')->url($link);
     }
 
     public function getHiddenPartName($name)
