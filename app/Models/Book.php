@@ -11,6 +11,20 @@ class Book extends Model
     protected $table = 'books';
     protected $guarded = ['id'];
 
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+
     public function authors()
     {
         return $this->belongsToMany('App\Models\Author', 'book_authors');
