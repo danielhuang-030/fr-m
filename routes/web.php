@@ -24,7 +24,7 @@ Route::namespace('Auth')->group(function() {
 Route::prefix('book')->namespace('Home')->group(function() {
     Route::get('/list', 'BooksController@index');
     Route::get('/search', 'BooksController@search');
-    Route::get('/{title}_{author}_{isbn13}', 'BooksController@show');
+    Route::get('/{slug}', 'BooksController@show');
 });
 
 /* author */
