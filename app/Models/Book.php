@@ -17,13 +17,13 @@ class Book extends Model
         return $this->belongsToMany('App\Models\Category', 'book_categories');
     }
 
-    public function bookImages()
+    public function images()
     {
         return $this->hasMany(BookImage::class);
     }
 
 
-    public function bookConditions()
+    public function conditions()
     {
         return $this->hasMany(BookCondition::class);
     }

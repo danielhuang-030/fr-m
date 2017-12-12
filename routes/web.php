@@ -3,7 +3,7 @@
 /**********  auth  **********/
 Auth::routes();
 
-Route::namespace('Auth')->group(function(){
+Route::namespace('Auth')->group(function() {
     // account active link
     Route::get('/register/active/{token}', 'UserController@activeAccount');
     // again send active link
@@ -20,6 +20,23 @@ Route::namespace('Auth')->group(function(){
     */
 });
 
+/* book */
+Route::prefix('book')->namespace('Home')->group(function() {
+    Route::get('/list', 'BooksController@index');
+    Route::get('/search', 'BooksController@search');
+    Route::get('/{title}_{author}_{isbn13}', 'BooksController@show');
+});
+
+/* author */
+Route::prefix('author')->namespace('Home')->group(function() {
+    Route::get('/{slug}', 'BooksController@author');
+});
+
+/* category */
+Route::prefix('category')->namespace('Home')->group(function() {
+    Route::get('/{slug}', 'BooksController@category');
+});
+
 /**********  home  **********/
 Route::get('/', 'Home\HomeController@index');
 
@@ -32,9 +49,9 @@ Route::prefix('home')->namespace('Home')->group(function(){
     Route::resource('/categories', 'CategoriesController', ['only' => ['index', 'show']]);
     Route::resource('/products', 'ProductsController', ['only' => ['index', 'show']]);
     Route::resource('cars', 'CarsController');
-
-    Route::resource('/books', 'BooksController', ['only' => ['index', 'show']]);
 });
+
+
 
 /**********  user  **********/
 Route::middleware(['user.auth'])->prefix('user')->namespace('User')->group(function(){
@@ -71,6 +88,7 @@ Route::middleware(['user.auth'])->prefix('user')->namespace('User')->group(funct
     Route::post('pay/show', 'PaymentsController@index');
     Route::post('pay/store', 'PaymentsController@pay');
 });
+
 // user payments !!! If [user.auth] is validated, infinite jumps will occur
 Route::get('user/pay/return', 'User\PaymentsController@payreturn');
 Route::post('user/pay/notify', 'User\PaymentsController@paynotify');

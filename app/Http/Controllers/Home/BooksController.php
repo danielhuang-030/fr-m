@@ -12,19 +12,76 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $model = new \App\Models\Book();
-        $book = $model->orWhereHas('authors', function($query) {
-            $query->where('name', 'like', 'jeff%');
-        })->orWhereHas('categories', function($query) {
-            $query->where('slug', 'like', 'childrenss%');
-        })->get();
+//        $book = $model->orWhereHas('authors', function($query) {
+//            $query->where('name', 'like', 'jeff%');
+//        })->orWhereHas('categories', function($query) {
+//            $query->where('slug', 'like', 'childrenss%');
+//        })->first();
+//        dd($book);
 
+//        $book = $model->with(['conditions' => function($query) {
+//            $query->where('condition', '=', 'new');
+//        }])->first()->conditions()->first();
+//        dd($book);
+
+        $book = $model->with(['authors' => function($query) {
+            $query->where('name', 'like', 'jeff%');
+        }])->first();
         dd($book);
-        // dd($book->authors()->get()->count());
-        // dd($book->categories()->get());
+
+        // dd(\App\Models\Category::find(1)->children()->get());
+
+        // dd($book->conditions()->get());
 
         // $this->setExample();
         // $this->dropExample();
 
+    }
+
+    public function author($slug) {
+        // author
+        $model = new \App\Models\Author();
+        $author = $model->where('slug', '=', $slug)->first();
+
+        // books
+        $model = new \App\Models\Book();
+        $books = $model->whereHas('authors', function($query) use (&$slug) {
+            $query->where('slug', $slug);
+        })->with('images', 'conditions')->get();
+
+        dd($author, $books);
+    }
+
+    public function category($slug) {
+        dd(str_slug($slug));
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword', '');
+        $model = new \App\Models\Book();
+        $books = $model->orWhere('title', 'like', "%{$keyword}%")->orWhereHas('authors', function($query) use (&$keyword) {
+            $query->where('name', 'like', "%{$keyword}%");
+        })->orWhereHas('categories', function($query) use (&$keyword) {
+            $query->where('name', 'like', "%{$keyword}%");
+        })->get();
+            //->paginate(10);
+        dd($books);
+
+        return view('home.products.search', compact('products'));
+    }
+
+    public function show($title, $author, $isbn13)
+    {
+        dd($title, $author, $isbn13);
+        $recommendProducts = Product::where('category_id', $product->category_id)->take(5)->get();
+
+        return view('home.products.show', compact('product', 'recommendProducts'));
+    }
+
+    protected function guard()
+    {
+        return Auth::guard();
     }
 
     protected function setExample()
@@ -113,38 +170,4 @@ class BooksController extends Controller
         dd('droped.');
     }
 
-
-    /**
-     * ajax get products by pinyin first char
-     * @param $pinyin
-     * @return mixed
-     */
-    public function getProductsByPinyin($pinyin)
-    {
-        $products = Product::where('first_pinyin', $pinyin)->get(['id', 'name'])->split(3);
-
-        return $products;
-    }
-
-
-    public function search(Request $request)
-    {
-        $keyword = $request->input('keyword', '');
-        $products = Product::where('name', 'like', "%{$keyword}%")->paginate(10);
-
-        return view('home.products.search', compact('products'));
-    }
-
-
-    public function show(Product $product)
-    {
-        $recommendProducts = Product::where('category_id', $product->category_id)->take(5)->get();
-
-        return view('home.products.show', compact('product', 'recommendProducts'));
-    }
-
-    protected function guard()
-    {
-        return Auth::guard();
-    }
 }
