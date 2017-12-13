@@ -45,19 +45,29 @@ class BooksController extends Controller
     public function author($slug) {
         // author
         $model = new \App\Models\Author();
-        $author = $model->where('slug', '=', $slug)->first();
+        $author = $model->where('slug', $slug)->first();
 
         // books
         $model = new \App\Models\Book();
-        $books = $model->whereHas('authors', function($query) use (&$slug) {
-            $query->where('slug', $slug);
-        })->with('images', 'conditions')->get();
+        $books = $model->whereHas('authors', function($query) use (&$author) {
+            $query->where('author_id', $author->id);
+        })->with('images', 'conditions')->paginate(10);
 
         dd($author, $books);
     }
 
     public function category($slug) {
-        dd(str_slug($slug));
+        // category
+        $model = new \App\Models\Category();
+        $category = $model->where('slug', $slug)->first();
+
+        // books
+        $model = new \App\Models\Book();
+        $books = $model->whereHas('categories', function($query) use (&$slug) {
+            $query->where('slug', $slug);
+        })->with('images', 'conditions')->paginate(10);
+
+        dd($category, $books);
     }
 
     public function search(Request $request)
@@ -68,8 +78,7 @@ class BooksController extends Controller
             $query->where('name', 'like', "%{$keyword}%");
         })->orWhereHas('categories', function($query) use (&$keyword) {
             $query->where('name', 'like', "%{$keyword}%");
-        })->get();
-            //->paginate(10);
+        })->paginate(10);
         dd($books);
 
         return view('home.products.search', compact('products'));
@@ -211,6 +220,7 @@ class BooksController extends Controller
 
     protected function dropExample()
     {
+        DB::table('book_authors')->truncate();
         DB::table('book_categories')->truncate();
         DB::table('book_images')->truncate();
         DB::table('book_conditions')->truncate();
