@@ -11,7 +11,7 @@ class BooksController extends Controller
 {
     public function index(Request $request)
     {
-        $slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Author::class, 'slug', 'Jeff-Kinney');
+        $slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Author::class, 'slug', 'Karen.Katz', ['unique' => false]);
         dd($slug);
 
 
@@ -86,6 +86,52 @@ class BooksController extends Controller
     protected function guard()
     {
         return Auth::guard();
+    }
+
+    public function tree()
+    {
+        $nodes = \App\Models\Category::get()->toTree();
+        echo '<pre>';
+        $traverse = function ($categories, $prefix = '-') use (&$traverse) {
+            foreach ($categories as $category) {
+                echo PHP_EOL.$prefix.' '.$category->name;
+
+                $traverse($category->children, $prefix.'-');
+            }
+        };
+        $traverse($nodes);
+        echo '</pre>';
+
+        $model = new \App\Models\Category();
+        $categories = $model->where('parent_id', null)->get();
+        foreach ($categories as $category) {
+            echo sprintf("<h1>%d: %s</h1><br />", $category->id, $category->name);
+
+//            $subCategories = $category->children()->get();
+//            if (0 === $subCategories->count()) {
+//                continue;
+//            }
+//            foreach ($subCategories as $subCategory) {
+//                echo sprintf("<h3>%d: %s</h3><br />", $subCategory->id, $subCategory->name);
+//                $thirdCategories = $subCategories->children()->get();
+//                if (0 === $thirdCategories->count()) {
+//                    continue;
+//                }
+//                foreach ($thirdCategories as $thirdCategory) {
+//                    echo sprintf("<h5>%d: %s</h5><br />", $thirdCategory->id, $thirdCategory->name);
+//                    /*
+//                    $fourthCategories = $thirdCategory->children()->get();
+//                    if (0 === $fourthCategories->count()) {
+//                        continue;
+//                    }
+//                    foreach ($fourthCategories as $fourthCategory) {
+//                        echo sprintf("<span>%d: %s</span><br />", $fourthCategory->id, $fourthCategory->name);
+//                    }*/
+//                }
+//            }
+
+        }
+        dd('done.');
     }
 
     protected function setExample()
