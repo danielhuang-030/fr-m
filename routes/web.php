@@ -22,7 +22,7 @@ Route::namespace('Auth')->group(function() {
 
 /* book */
 Route::prefix('book')->namespace('Home')->group(function() {
-    Route::get('/list', 'BooksController@index');
+    Route::get('/', 'BooksController@index');
     Route::get('/search', 'BooksController@search');
     Route::get('/{slug}', 'BooksController@show');
 });
