@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Storage;
 use Curl\Curl;
 
-class GetBooks extends Command
+class BwbGetBooks extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'bwb:getbooks {date?}';
+    protected $signature = 'bwb:get {date?}';
 
     /**
      * The console command description.
@@ -21,6 +21,12 @@ class GetBooks extends Command
      * @var string
      */
     protected $description = 'Get books from bwb algolia feed';
+
+    /**
+     * curl
+     *
+     * @var Curl
+     */
     private $curl;
 
     /**
@@ -31,7 +37,7 @@ class GetBooks extends Command
     public function __construct(Curl $curl)
     {
         parent::__construct();
-        ini_set("memory_limit", "3072M");
+        ini_set("memory_limit", "4096M");
         $curl->setHeader("X-Algolia-API-Key", env('ALGOLIA_API_KEY'));
         $curl->setHeader("X-Algolia-Application-Id", env('ALGOLIA_APP_ID'));
         $this->curl = $curl;

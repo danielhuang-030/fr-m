@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Storage;
 use DB;
 
-class ParseBooks extends Command
+class BwbParseBooks extends Command
 {
     /**
      * bwb image url
@@ -30,7 +30,7 @@ class ParseBooks extends Command
      *
      * @var string
      */
-    protected $signature = 'bwb:parsebooks {date?}';
+    protected $signature = 'bwb:parse {date?}';
 
     /**
      * The console command description.
@@ -98,7 +98,7 @@ class ParseBooks extends Command
                     $categoryIds = [];
                     $categoryStr = '';
                     $hasCategory = false;
-                    for ($i = 2; $i >= 0; $i--) {
+                    for ($i = 4; $i >= 0; $i--) {
                         $propertyStr = sprintf('lvl%d', $i);
 
                         // is exist
@@ -117,6 +117,7 @@ class ParseBooks extends Command
                             }
                         }
                     }
+
                     if ($hasCategory) {
                         // Non-Classifiable special treatment
                         if (str_contains($categoryStr, 'Non-Classifiable')) {
