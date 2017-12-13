@@ -9,6 +9,23 @@ use DB;
 class ParseBooks extends Command
 {
     /**
+     * bwb image url
+     *
+     * @var string
+     */
+    const BWB_IMAGE_URL = 'https://images.betterworldbooks.com';
+
+    /**
+     * bwb ignore category names
+     *
+     * @var array
+     */
+    const BWB_IGNORE_CATEGORY_NAMES = [
+        'Bargain Bin',
+        'Clearance Sale',
+    ];
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -30,7 +47,7 @@ class ParseBooks extends Command
     public function __construct()
     {
         parent::__construct();
-        ini_set("memory_limit", "3072M");
+        ini_set("memory_limit", "4096M");
     }
 
     /**
@@ -49,60 +66,107 @@ class ParseBooks extends Command
         foreach ($files as $file) {
             $books = json_decode(Storage::disk('public')->get($file));
             if (empty($books)) {
-                $this->error(sprintf('There is no data in this file: %s', $file));
+                $this->error(sprintf('There is no data in this file,%s', $file));
                 continue;
             }
 
             foreach ($books as $book) {
+                // $this->info(sprintf('This book insert start,%s', $book->Isbn13));
+//                if ('9780811857826' != $book->Isbn13) {
+//                    continue;
+//                }
+
                 DB::beginTransaction();
                 try {
                     // author
                     $authorIds = [];
-                    $authors = $book->Authors;
-                    foreach ($authors as $author) {
+                    $authorNames = $book->Authors;
+                    foreach ($authorNames as $name) {
                         $model = new \App\Models\Author();
-                        $model->name = $author;
-                        $model->save();
-                        $authorIds[] = $model->id;
+                        $slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Book::class, 'slug', $name, ['unique' => false]);
+                        $author = $model->where('slug', $slug)->first();
+                        if (null === $author) {
+                           $author = new \App\Models\Author();
+                           $author->name = $name;
+                           $author->save();
+                        }
+                        $authorIds[] = $author->id;
                     }
-                    $firstAuthor = current($authors);
+                    $firstAuthor = current($authorNames);
 
                     // category
                     $categoryIds = [];
-                    $categoryStr = $book->Categories->lvl2[0];
-                    $categoryList = explode(' > ', $categoryStr);
-                    $parentCategory = null;
-                    foreach ($categoryList as $name) {
-                        $categoryData = [
-                            'name' => $name,
-                        ];
-                        $model = new \App\Models\Category();
-                        $category = $model->create($categoryData);
-                        if (!empty($parentCategory)) {
-                            $category->appendToNode($parentCategory)->save();
+                    $categoryStr = '';
+                    $hasCategory = false;
+                    for ($i = 2; $i >= 0; $i--) {
+                        $propertyStr = sprintf('lvl%d', $i);
+
+                        // is exist
+                        if (empty($book->Categories->$propertyStr)) {
+                            continue;
                         }
-                        $categoryIds[] = $category->id;
-                        $parentCategory = $category;
+
+                        // ignore category name
+                        $pattern = sprintf('#^(?:%s)#i', implode('|', static::BWB_IGNORE_CATEGORY_NAMES));
+                        foreach ($book->Categories->$propertyStr as $tempIndex => $tempStr) {
+                            preg_match($pattern, $tempStr, $matches);
+                            if (empty($matches)) {
+                                $categoryStr = $tempStr;
+                                $hasCategory = true;
+                                break 2;
+                            }
+                        }
+                    }
+                    if ($hasCategory) {
+                        // Non-Classifiable special treatment
+                        if (str_contains($categoryStr, 'Non-Classifiable')) {
+                            $categoryStr = 'Non-Classifiable';
+                        }
+
+                        $categoryNames = explode(' > ', $categoryStr);
+                        $parentCategory = null;
+                        foreach ($categoryNames as $name) {
+                            $model = new \App\Models\Category();
+                            $currentCategory = $model->where('name', $name)->where('parent_id', empty($parentCategory) ? null : $parentCategory->id)->first();
+                            if (null === $currentCategory) {
+                               $currentCategory = new \App\Models\Category();
+                               $currentCategory->name = $name;
+                            }
+                            if (!empty($parentCategory)) {
+                                $currentCategory->parent_id = $parentCategory->id;
+                                // $currentCategory->appendToNode($parentCategory)->save();
+                            }
+                            $currentCategory->save();
+                            $categoryIds[] = $currentCategory->id;
+                            $parentCategory = $currentCategory;
+                        }
                     }
 
                     // book
+                    $bwbId = $book->objectID;
                     $model = new \App\Models\Book();
-                    $model->title = $book->Title;
-                    $model->slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Book::class, 'slug', sprintf('%s-%s-%s', $book->Title, $firstAuthor, $book->Isbn13));
-                    $model->bwb_id = $book->objectID;
-                    $model->isbn10 = $book->Isbn10;
-                    $model->isbn13 = $book->Isbn13;
-                    $model->description = '';
-                    $model->format = $book->Format;
-                    $model->weight = $book->Weight;
-                    $model->save();
-                    $bookId = $model->id;
+                    $currentBook = $model->where('bwb_id', $bwbId)->first();
+                    if (null === $currentBook) {
+                        $currentBook = new \App\Models\Book();
+                    }
+                    $currentBook->title = $book->Title;
+                    $currentBook->slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Book::class, 'slug', sprintf('%s-%s-%s', $book->Title, $firstAuthor, $book->Isbn13));
+                    $currentBook->bwb_id = $bwbId;
+                    $currentBook->isbn10 = $book->Isbn10;
+                    $currentBook->isbn13 = $book->Isbn13;
+                    $currentBook->format = $book->Format;
+                    $currentBook->weight = $book->Weight;
+                    $currentBook->save();
+                    $bookId = $currentBook->id;
 
-                    // condition
+                    // condition (delete before adding)
                     $availableCopies = $book->AvailableCopies;
+
                     $newCondition = null;
                     if (empty($availableCopies)) {
-                        throwException('There is no condition for this book');
+                        throw new \Exception('There is no condition for this book');
+                        // $this->info(sprintf('There is no condition for this book,%s', $book->Isbn13));
+                        // continue;
                     }
                     foreach ($availableCopies as $availableCopy) {
                         if ($availableCopy->IsNew) {
@@ -110,53 +174,86 @@ class ParseBooks extends Command
                         }
                     }
                     if (null === $newCondition) {
-                        throwException('There is no new condition for this book');
+                        throw new \Exception('There is no new condition for this book');
+                        // $this->info(sprintf('There is no new condition for this book,%s', $book->Isbn13));
+                        // continue;
                     }
                     $model = new \App\Models\BookCondition();
-                    $model->condition = 'new';
-                    $model->quantity = $newCondition->Quantity;
-                    $model->price = $newCondition->UnitPrice;
-                    $model->in_stock = 1;
-                    $model->book_id = $bookId;
-                    $model->save();
+                    $model->where('book_id', $bookId)->delete();
+                    $bookCondition = new \App\Models\BookCondition();
+                    $bookCondition->condition = 'new';
+                    $bookCondition->quantity = $newCondition->Quantity;
+                    $bookCondition->price = $newCondition->UnitPrice;
+                    $bookCondition->in_stock = 1;
+                    $bookCondition->book_id = $bookId;
+                    $bookCondition->save();
 
-                    // image
+                    // image (delete before adding)
                     $model = new \App\Models\BookImage();
-                    $model->book_id = $bookId;
-                    $model->file = sprintf('https://images.betterworldbooks.com/%s', $book->ImageURL);
-                    $model->save();
+                    $model->where('book_id', $bookId)->delete();
+                    $bookImage = new \App\Models\BookImage();
+                    $bookImage->book_id = $bookId;
+                    $bookImage->file = sprintf('%s/%s', static::BWB_IMAGE_URL, $book->ImageURL);
+                    $bookImage->save();
 
-                    // book_author
+                    // book_author (delete before adding)
+                    $model = new \App\Models\BookAuthor();
+                    $model->where('book_id', $bookId)->delete();
                     foreach ($authorIds as $authorId) {
-                        $model = new \App\Models\BookAuthor();
-                        $model->book_id = $bookId;
-                        $model->author_id = $authorId;
-                        $model->save();
+                        $bookAuthor = new \App\Models\BookAuthor();
+                        $bookAuthor->book_id = $bookId;
+                        $bookAuthor->author_id = $authorId;
+                        $bookAuthor->save();
                     }
 
-                    // book_category
+                    // book_category (delete before adding)
+                    $model = new \App\Models\BookCategory();
+                    $model->where('book_id', $bookId)->delete();
                     foreach ($categoryIds as $categoryId) {
-                        $model = new \App\Models\BookCategory();
-                        $model->book_id = $bookId;
-                        $model->category_id = $categoryId;
-                        $model->save();
+                        $bookCategory = new \App\Models\BookCategory();
+                        $bookCategory->book_id = $bookId;
+                        $bookCategory->category_id = $categoryId;
+                        $bookCategory->save();
                     }
                 } catch (\Exception $e) {
                     DB::rollback();
-                    $this->error($e->getMessage());
-                    return;
+                    $this->error(sprintf('%s,%s', $e->getMessage(), $book->Isbn13));
+
+                    // return;
                     continue;
                 }
                 DB::commit();
 
-                dd($book);
+                $this->info(sprintf('This book insert done,%s', $book->Isbn13));
             }
+            // dd('1000 done.');
         }
-
     }
 
     private function getDate()
     {
         return $this->argument('date') ? $this->argument('date'): (new \DateTime())->format('Ymd');
     }
+
+    public function info($string, $verbosity = null)
+    {
+        // log
+        // $this->logOutputInfo(sprintf('info,%s', $string));
+
+        parent::info($string, $verbosity);
+    }
+
+    public function error($string, $verbosity = null)
+    {
+        // log
+        $this->logOutputInfo(sprintf('error,%s', $string));
+
+        parent::error($string, $verbosity);
+    }
+
+    protected function logOutputInfo($string)
+    {
+        file_put_contents(sprintf('%s/parse_book.log', storage_path('logs')), $string . "\n", FILE_APPEND);
+    }
+
 }
