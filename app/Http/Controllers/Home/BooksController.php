@@ -90,9 +90,19 @@ class BooksController extends Controller
         return view('home.products.search', compact('products'));
     }
 
-    public function show($title, $author, $isbn13)
+    public function show($slug)
     {
-        dd($title, $author, $isbn13);
+        // book
+        $model = new \App\Models\Book();
+        $book = $model->where('slug', $slug)->first();
+        $authors = null;
+        $categories = null;
+        if ($book instanceof \App\Models\Book) {
+            $authors = $book->authors()->get();
+            $categories = $book->categories()->get();
+        }
+        dd($book, $authors, $categories);
+
         $recommendProducts = Product::where('category_id', $product->category_id)->take(5)->get();
 
         return view('home.products.show', compact('product', 'recommendProducts'));
