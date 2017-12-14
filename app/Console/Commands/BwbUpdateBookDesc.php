@@ -71,7 +71,7 @@ class BwbUpdateBookDesc extends Command
                 }
                 $xml = new \SimpleXMLElement($this->curl->response);
                 if (!isset($xml->Items->Item->ItemAttributes->ShortDescription)) {
-                    $this->error(sprintf('Unable to get description,%s', $this->curl->curl_error_message, $book->isbn13));
+                    $this->error(sprintf('Unable to get description,%s', $book->isbn13));
                     continue;
                 }
 
