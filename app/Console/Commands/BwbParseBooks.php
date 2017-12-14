@@ -62,6 +62,11 @@ class BwbParseBooks extends BwbCommand
             return;
         }
 
+        // update all in_stock to 0
+        DB::table('book_conditions')->update([
+            'in_stock' => 0,
+        ]);
+
         foreach ($files as $file) {
             $books = json_decode(Storage::disk('public')->get($file));
             if (empty($books)) {
@@ -159,14 +164,11 @@ class BwbParseBooks extends BwbCommand
                     $currentBook->save();
                     $bookId = $currentBook->id;
 
-                    // condition (delete before adding)
+                    // condition (only new books)
                     $availableCopies = $book->AvailableCopies;
-
                     $newCondition = null;
                     if (empty($availableCopies)) {
                         throw new \Exception('There is no condition for this book');
-                        // $this->info(sprintf('There is no condition for this book,%s', $book->Isbn13));
-                        // continue;
                     }
                     foreach ($availableCopies as $availableCopy) {
                         if ($availableCopy->IsNew) {
@@ -175,12 +177,13 @@ class BwbParseBooks extends BwbCommand
                     }
                     if (null === $newCondition) {
                         throw new \Exception('There is no new condition for this book');
-                        // $this->info(sprintf('There is no new condition for this book,%s', $book->Isbn13));
-                        // continue;
                     }
                     $model = new \App\Models\BookCondition();
-                    $model->where('book_id', $bookId)->delete();
-                    $bookCondition = new \App\Models\BookCondition();
+                    $bookCondition = $model->where('book_id', $bookId)
+                        ->where('condition', 'new')->first();
+                    if (null === $bookCondition) {
+                        $bookCondition = new \App\Models\BookCondition();
+                    }
                     $bookCondition->condition = 'new';
                     $bookCondition->quantity = $newCondition->Quantity;
                     $bookCondition->price = $newCondition->UnitPrice;
@@ -188,17 +191,20 @@ class BwbParseBooks extends BwbCommand
                     $bookCondition->book_id = $bookId;
                     $bookCondition->save();
 
-                    // image (delete before adding)
+                    // image (skip if images exists)
                     $model = new \App\Models\BookImage();
-                    $model->where('book_id', $bookId)->delete();
-                    $bookImage = new \App\Models\BookImage();
-                    $bookImage->book_id = $bookId;
-                    $bookImage->file = sprintf('%s/%s', static::BWB_IMAGE_URL, $book->ImageURL);
-                    $bookImage->save();
+                    $bookImage = $model->where('book_id', $bookId)->first();
+                    if (null === $bookImage) {
+                        $bookImage = new \App\Models\BookImage();
+                        $bookImage->book_id = $bookId;
+                        $bookImage->file = sprintf('%s/%s', static::BWB_IMAGE_URL, $book->ImageURL);
+                        $bookImage->save();
+                    }
 
                     // book_author (delete before adding)
                     $model = new \App\Models\BookAuthor();
                     $model->where('book_id', $bookId)->delete();
+                    $authorIds = array_unique($authorIds);
                     foreach ($authorIds as $authorId) {
                         $bookAuthor = new \App\Models\BookAuthor();
                         $bookAuthor->book_id = $bookId;
@@ -209,6 +215,7 @@ class BwbParseBooks extends BwbCommand
                     // book_category (delete before adding)
                     $model = new \App\Models\BookCategory();
                     $model->where('book_id', $bookId)->delete();
+                    $categoryIds = array_unique($categoryIds);
                     foreach ($categoryIds as $categoryId) {
                         $bookCategory = new \App\Models\BookCategory();
                         $bookCategory->book_id = $bookId;
@@ -224,7 +231,7 @@ class BwbParseBooks extends BwbCommand
                 }
                 DB::commit();
 
-                $this->info(sprintf('This book insert done,%s', $book->Isbn13));
+                $this->info(sprintf('This book done,%s', $book->Isbn13));
             }
             // dd('1000 done.');
         }

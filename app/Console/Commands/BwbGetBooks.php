@@ -65,12 +65,12 @@ class BwbGetBooks extends BwbCommand
             $books = null;
 
             // info
-            $this->info(sprintf('page: %d downloaded, next cursor: %s', $page, $cursor));
+            $this->info(sprintf('page: %d downloaded next cursor,%s', $page, $cursor));
 
             $page ++;
 
             // 先抓 30 頁測試
-            if (31 == $page) {
+            if (51 == $page) {
                 $cursor = "";
             }
         } while (!empty($cursor));
