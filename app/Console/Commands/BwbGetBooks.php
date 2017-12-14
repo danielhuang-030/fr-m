@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Storage;
 use Curl\Curl;
 
-class BwbGetBooks extends Command
+class BwbGetBooks extends BwbCommand
 {
     /**
      * The name and signature of the console command.

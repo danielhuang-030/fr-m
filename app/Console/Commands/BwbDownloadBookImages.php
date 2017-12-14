@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Storage;
 use File;
 
-class BwbDownloadBookImages extends Command
+class BwbDownloadBookImages extends BwbCommand
 {
     /**
      * The name and signature of the console command.
@@ -43,33 +42,40 @@ class BwbDownloadBookImages extends Command
         $model = new \App\Models\Book();
 
         // handle 500 at one time
-        $model->with(['images' => function($query) {
-            $query->where('file', 'like', 'http%');
-        }])->chunk(500, function($books) {
-            foreach ($books as $book) {
-                $images = $book->images()->get();
-                foreach ($images as $image) {
-                    if (!starts_with($image->file, 'http')) {
-                        continue;
+        $model->select('books.*')
+            ->join('book_images', 'books.id', '=', 'book_images.book_id')
+            ->where('book_images.file', 'like', 'http%')
+            ->with('images')
+            ->chunk(500, function($books) {
+                foreach ($books as $book) {
+                    $images = $book->images()->get();
+                    foreach ($images as $image) {
+                        if (!starts_with($image->file, 'http')) {
+                            continue;
+                        }
+
+                        try {
+                            // build dir
+                            $dir = $image->getDir();
+                            $dirWithBooks = sprintf('%s/%s', config('web.dir.book'), $dir);
+                            Storage::disk('public')->makeDirectory($dirWithBooks, 0777);
+
+                            // copy
+                            $file = sprintf('%s.%s', $book->slug, File::extension($image->file));
+                            if (!File::copy($image->file, sprintf('%s/%s', Storage::disk('public')->path($dirWithBooks), $file))) {
+                                throw new Exception('Image download failed');
+                            }
+
+                            // update
+                            $image->file = sprintf('%s/%s', $dir, $file);
+                            $image->save();
+                        } catch (\Exception $e) {
+                            $this->error(sprintf('%s,%s', $e->getMessage(), $book->isbn13));
+                            continue;
+                        }
                     }
-
-                    // build dir
-                    $dir = $image->getDir();
-                    $dirWithBooks = sprintf('%s/%s', config('web.dir.book'), $dir);
-                    Storage::disk('public')->makeDirectory($dirWithBooks, 0777);
-
-                    // copy
-                    $file = sprintf('%s.%s', $book->slug, File::extension($image->file));
-                    File::copy($image->file, sprintf('%s/%s', Storage::disk('public')->path($dirWithBooks), $file));
-
-                    // update
-                    $image->file = sprintf('%s/%s', $dir, $file);
-                    $image->save();
-
-                    // dd('done');
+                    $this->info(sprintf('Image download successfully,%s', $book->isbn13));
                 }
-                $this->info(sprintf('Image download successfully,%s', $book->isbn13));
-            }
         });
 
     }

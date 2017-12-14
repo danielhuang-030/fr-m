@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Storage;
 use DB;
 
-class BwbParseBooks extends Command
+class BwbParseBooks extends BwbCommand
 {
     /**
      * bwb image url
@@ -234,27 +233,6 @@ class BwbParseBooks extends Command
     private function getDate()
     {
         return $this->argument('date') ? $this->argument('date'): (new \DateTime())->format('Ymd');
-    }
-
-    public function info($string, $verbosity = null)
-    {
-        // log
-        // $this->logOutputInfo(sprintf('info,%s', $string));
-
-        parent::info($string, $verbosity);
-    }
-
-    public function error($string, $verbosity = null)
-    {
-        // log
-        $this->logOutputInfo(sprintf('error,%s', $string));
-
-        parent::error($string, $verbosity);
-    }
-
-    protected function logOutputInfo($string)
-    {
-        file_put_contents(sprintf('%s/parse_book.log', storage_path('logs')), $string . "\n", FILE_APPEND);
     }
 
 }
