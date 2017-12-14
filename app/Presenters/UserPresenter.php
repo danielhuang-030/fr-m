@@ -2,6 +2,8 @@
 
 namespace App\Presenters;
 
+use Storage;
+
 class UserPresenter
 {
     public function getAvatarLink($link)
