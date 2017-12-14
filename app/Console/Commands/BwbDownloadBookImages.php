@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Storage;
-use DB;
+use File;
 
 class BwbDownloadBookImages extends Command
 {
@@ -45,15 +45,33 @@ class BwbDownloadBookImages extends Command
         // handle 1000 at one time
         $model->with(['images' => function($query) {
             $query->where('file', 'like', 'http%');
-        }])->chunk(1000, function($books) {
+        }])->chunk(500, function($books) {
             foreach ($books as $book) {
+                $images = $book->images()->get();
+                foreach ($images as $image) {
+                    if (!starts_with($image->file, 'http')) {
+                        continue;
+                    }
 
-                $directory = sprintf('books/%s', env('ALGOLIA_DATA_PATH'), $this->getDate());
-                Storage::disk('public')->makeDirectory($directory, 0777);
+                    // build dir
+                    $dir = $image->getDir();
+                    $dirWithBooks = sprintf('%s/%s', config('web.dir.book'), $dir);
+                    Storage::disk('public')->makeDirectory($dirWithBooks, 0777);
 
-                dd($book);
+                    // copy
+                    $file = sprintf('%s.%s', $book->slug, File::extension($image->file));
+                    File::copy($image->file, sprintf('%s/%s', Storage::disk('public')->path($dirWithBooks), $file));
+
+                    // update
+                    $image->file = sprintf('%s/%s', $dir, $file);
+                    $image->save();
+
+                    // dd('done');
+                }
+                $this->info(sprintf('Image download successfully,%s', $book->isbn13));
             }
         });
+
     }
 
 }

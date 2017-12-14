@@ -11,6 +11,12 @@ class BooksController extends Controller
 {
     public function index(Request $request)
     {
+        $model = new \App\Models\Book();
+        $book = $model->find(1)->first();
+        $presenter = new \App\Presenters\BookPresenter();
+        dd($presenter->getImageLinks($book));
+
+
         $slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Author::class, 'slug', 'Karen.Katz', ['unique' => false]);
         dd($slug);
 

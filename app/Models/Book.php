@@ -37,7 +37,7 @@ class Book extends Model
 
     public function images()
     {
-        return $this->hasMany(BookImage::class);
+        return $this->hasMany(BookImage::class)->orderBy('sort');
     }
 
 

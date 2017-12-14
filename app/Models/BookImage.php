@@ -11,4 +11,16 @@ class BookImage extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+    /**
+     * get directory
+     *
+     * @example when book_id = 1123, directory is 123
+     * @return string
+     */
+    public function getDir()
+    {
+        return sprintf('%03d', $this->book_id % 1000);
+    }
+
 }
