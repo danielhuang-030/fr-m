@@ -42,7 +42,7 @@ class BwbDownloadBookImages extends Command
     {
         $model = new \App\Models\Book();
 
-        // handle 1000 at one time
+        // handle 500 at one time
         $model->with(['images' => function($query) {
             $query->where('file', 'like', 'http%');
         }])->chunk(500, function($books) {
