@@ -15,5 +15,9 @@ class VerifyCsrfToken extends Middleware
         '/admin/products/upload/*',
         '/user/upload/avatar',
         '/user/pay/*',
+
+        // 暫時排除 cart, 測試用
+        '/cart',
+        '/cart/*',
     ];
 }
