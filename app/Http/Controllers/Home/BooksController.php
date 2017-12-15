@@ -9,6 +9,11 @@ use App\Http\Controllers\Controller;
 
 class BooksController extends Controller
 {
+    /**
+     * list
+     *
+     * @param Request $request
+     */
     public function index(Request $request)
     {
         $model = new \App\Models\Book();
@@ -48,7 +53,12 @@ class BooksController extends Controller
 
     }
 
-    public function author($slug) {
+    /**
+     * author list
+     *
+     * @param string $slug
+     */
+    public function author(string $slug) {
         // author
         $model = new \App\Models\Author();
         $author = $model->where('slug', $slug)->first();
@@ -62,7 +72,12 @@ class BooksController extends Controller
         dd($author, $books);
     }
 
-    public function category($slug) {
+    /**
+     * category list
+     *
+     * @param string $slug
+     */
+    public function category(string $slug) {
         // category
         $model = new \App\Models\Category();
         $category = $model->where('slug', $slug)->first();
@@ -76,6 +91,11 @@ class BooksController extends Controller
         dd($category, $books);
     }
 
+    /**
+     * search keyword
+     *
+     * @param Request $request
+     */
     public function search(Request $request)
     {
         $keyword = $request->input('keyword', '');
@@ -90,7 +110,12 @@ class BooksController extends Controller
         return view('home.products.search', compact('products'));
     }
 
-    public function show($slug)
+    /**
+     * show book detail
+     *
+     * @param string $slug
+     */
+    public function show(string $slug)
     {
         // book
         $model = new \App\Models\Book();
@@ -108,11 +133,19 @@ class BooksController extends Controller
         return view('home.products.show', compact('product', 'recommendProducts'));
     }
 
+    /**
+     * guard
+     *
+     * @return \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard
+     */
     protected function guard()
     {
         return Auth::guard();
     }
 
+    /**
+     * category tree
+     */
     public function tree()
     {
         $nodes = \App\Models\Category::get()->toTree();
@@ -159,6 +192,13 @@ class BooksController extends Controller
         dd('done.');
     }
 
+
+
+
+
+
+
+    
     protected function setExample()
     {
         // author
