@@ -3,11 +3,15 @@
 /**********  auth  **********/
 Auth::routes();
 
+/* Auth */
 Route::namespace('Auth')->group(function() {
-    // account active link
-    Route::get('/register/active/{token}', 'UserController@activeAccount');
-    // again send active link
-    Route::get('/register/again/send/{id}', 'UserController@sendActiveMail');
+    // register
+    Route::prefix('register')->group(function() {
+        // account active link
+        Route::get('/active/{token}', 'UserController@activeAccount');
+        // again send active link
+        Route::get('/again/send/{id}', 'UserController@sendActiveMail');
+    });
 
     /*
     // github,qq,weibo authorize login
@@ -20,23 +24,32 @@ Route::namespace('Auth')->group(function() {
     */
 });
 
-/* book */
-Route::prefix('book')->namespace('Home')->group(function() {
-    Route::get('/tree', 'BooksController@tree');
+/* Home */
+Route::namespace('Home')->group(function() {
+    // book
+    Route::prefix('book')->group(function() {
+        Route::get('/tree', 'BooksController@tree');
 
-    Route::get('/', 'BooksController@index');
-    Route::get('/search', 'BooksController@search');
-    Route::get('/{slug}', 'BooksController@show');
-});
+        Route::get('/', 'BooksController@index');
+        Route::get('/search', 'BooksController@search');
+        Route::get('/{slug}', 'BooksController@show');
+    });
 
-/* author */
-Route::prefix('author')->namespace('Home')->group(function() {
-    Route::get('/{slug}', 'BooksController@author');
-});
+    // author
+    Route::get('/author/{slug}', 'BooksController@author');
 
-/* category */
-Route::prefix('category')->namespace('Home')->group(function() {
-    Route::get('/{slug}', 'BooksController@category');
+    // category
+    Route::get('/category/{slug}', 'BooksController@category');
+
+    // cart
+    Route::resource('/cart', 'CartsController', [
+        'only' => [
+            'index',
+            'store',
+            'update',
+            'destroy',
+        ],
+    ]);
 });
 
 /**********  home  **********/
