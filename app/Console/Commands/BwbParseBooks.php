@@ -153,9 +153,9 @@ class BwbParseBooks extends BwbCommand
                     $currentBook = $model->where('bwb_id', $bwbId)->first();
                     if (null === $currentBook) {
                         $currentBook = new \App\Models\Book();
+                        $currentBook->slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Book::class, 'slug', sprintf('%s-%s-%s', $book->Title, $firstAuthor, $book->Isbn13));
                     }
                     $currentBook->title = $book->Title;
-                    $currentBook->slug = \Cviebrock\EloquentSluggable\Services\SlugService::createSlug(\App\Models\Book::class, 'slug', sprintf('%s-%s-%s', $book->Title, $firstAuthor, $book->Isbn13));
                     $currentBook->bwb_id = $bwbId;
                     $currentBook->isbn10 = $book->Isbn10;
                     $currentBook->isbn13 = $book->Isbn13;
