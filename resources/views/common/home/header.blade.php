@@ -6,10 +6,12 @@
             <div class="row">
                 <div class="col-sm-12 col-md-4 is-hidden-sm-down">
                     <ul class="nav-top nav-top-left list-inline t-left">
+                    <?php /*
                         <li><a href="https://baidu.com"><i class="fa fa-question-circle"></i>指南</a>
                         </li>
                         <li><a href="https://baidu.com"><i class="fa fa-support"></i>帮助</a>
                         </li>
+                    */ ?>
                     </ul>
                 </div>
                 <div class="col-sm-12 col-md-8">
@@ -19,8 +21,7 @@
                                 <a href="{{ url('/user') }}"><i class="fa fa-user"></i>{{ Auth::user()->name }}</a>
                             </li>
                             <li>
-                                <a href="javascript:;" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i>Logout</a>
+                                <a href="{{ route('logout') }}"><i class="fa fa-lock"></i>Logout</a>
                             </li>
                         @endauth
                         @guest
@@ -33,9 +34,6 @@
 
                     </ul>
                 </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    {{ csrf_field() }}
-                </form>
             </div>
         </div>
     </div>

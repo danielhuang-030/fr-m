@@ -92,7 +92,7 @@ class LoginController extends Controller
      * @param Request $request
      * @param $user
      */
-    protected function authenticated(Request $request, $user)
+    protected function authenticated(Request $request, User $user)
     {
         //
         $user->increment('login_count');
@@ -139,4 +139,11 @@ class LoginController extends Controller
     {
         return 'account';
     }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
+
 }

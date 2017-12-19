@@ -22,7 +22,12 @@ Route::namespace('Auth')->group(function() {
     Route::get('/auth/weibo', 'AuthLoginController@redirectToWeibo');
     Route::get('/auth/weibo/callback', 'AuthLoginController@handleWeiboCallback');
     */
+
+    // logout
+    Route::get('logout', 'LoginController@logout')->name('logout');
 });
+
+
 
 /* Home */
 Route::namespace('Home')->group(function() {
