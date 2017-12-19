@@ -55,6 +55,10 @@ Route::namespace('Home')->group(function() {
             'destroy',
         ],
     ]);
+
+    // test session
+    Route::get('/cart/set/{v}', 'CartsController@set');
+    Route::get('/cart/get', 'CartsController@get');
 });
 
 /**********  home  **********/

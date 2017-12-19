@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-sm-4 t-xs-center t-md-right">
                         <div class="header-cart">
-                            <a href="{{ url('/home/cars') }}">
+                            <a href="{{ url('/cart') }}">
                                 <span id="car_icon" class="icon lnr lnr-cart"></span>
                                 <div>
                                     <span id="cart-number" class="cart-number">0</span>
@@ -54,10 +54,5 @@
 
 <script>
     var car_nums_span = document.getElementById('cart-number');
-    @auth
-        car_nums_span.innerText = parseInt("{{ Auth::user()->cars->count() }}");
-    @endauth
-    @guest
-        car_nums_span.innerText = localStorage.length;
-    @endguest
+    car_nums_span.innerText = parseInt("{{ \Cart::getContent()->count() }}");
 </script>

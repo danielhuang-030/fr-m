@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Home;
 
-use Cart;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\CartService;
 
 class CartsController extends Controller
 {
@@ -15,16 +14,40 @@ class CartsController extends Controller
         'data' => '',
     ];
 
+    public function set($v)
+    {
+        session()->put('test-session', $v);
+        \Session::put('test-session', $v);
+    }
+
+    public function get()
+    {
+        $v = session()->get('test-session');
+        // dd(session()->all());
+        dd(\Session::all());
+    }
+
+    /**
+     * CartService
+     *
+     * @var CartService
+     */
+    protected $service;
+
+    /**
+     * construct
+     *
+     * @param AccountService $accountService
+     */
+    public function __construct(CartService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index()
     {
-        dd('cart list');
-        /*
-        $cars = [];
-        if ($this->guard()->check()) {
-            $cars = $this->guard()->user()->cars;
-        }
-        */
-        return view('home.cars.index', compact('cars'));
+        $items = \Cart::getContent();
+        return view('home.carts.index', compact('items'));
     }
 
     public function store(Request $request)
@@ -34,71 +57,19 @@ class CartsController extends Controller
         $quantity = $request->get('qty', 1);
         $condition = $request->get('cond', 'new');
 
-        // check book exist and in stock
-        $model = new \App\Models\Book();
-        $book = $model->select('books.*')
-            ->with('conditions')
-            ->join('book_conditions', 'book_conditions.book_id', '=', 'books.id')
-            ->where('books.id', $request->get('id', 0))
-            ->where('book_conditions.condition', $request->get('cond', 'new'))
-            ->where('book_conditions.in_stock', 1)
-            ->where('book_conditions.quantity', '>', 0)
-            ->first();
-        if (!$book instanceof \App\Models\Book) {
-            $this->result['code'] = 403;
-            $this->result['message'] = 'Book does not exist or is not in stock';
-            return response()->json($this->result);
-        }
-
-        // check stock quantity
-        $bookCondition = $book->conditions()->first();
-        if ($book->conditions()->first()->quantity < $request->get('qty', 1)) {
-            $this->result['code'] = 403;
-            $this->result['message'] = 'Not enough stock';
-            return response()->json($this->result);
-        }
-
-        // get from cart
-        dd(Cart::getContent());
-        $item = Cart::get($id);
-
-
-        if (null === $item) {
-            $cartData = [
-                'id' => $id,
-                'name' => $book->title,
-                'price' => $bookCondition->price,
-                'quantity' => $quantity,
-                'attributes' => [
-                    'condition' => $condition,
-                ],
-            ];
-            $r = Cart::add($cartData);
-        }
-        dd(Cart::getContent());
-
-
-
-
-
         // add cart
-
-
-
-
-        if ($car = $this->guard()->user()->cars()->where('product_id', $form_data['product_id'])->first()) {
-            $car->increment('numbers', $form_data['numbers']);
-        } else {
-            Car::create($form_data);
+        try {
+            $this->service->add($id, $quantity, $condition);
+        } catch (\Exception $e) {
+            $this->result['code'] = 403;
+            $this->result['message'] = $e->getMessage();
+            return response()->json($this->result);
         }
 
-        // Reduce inventory
-        ProductDetail::where('product_id', $form_data['product_id'])
-            ->lockForUpdate()
-            ->first()
-            ->decrement('count', $form_data['numbers']);
-
-        return $this->response = ['code' => 0, 'msg' => '加入购物车成功'];
+        $this->result['code'] = 200;
+        $this->result['message'] = 'Add to Cart successfully';
+        $this->result['data'] = \Cart::getContent();
+        return response()->json($this->result);
     }
 
     public function update(Request $request, int $id)
@@ -120,15 +91,11 @@ class CartsController extends Controller
 
     public function destroy($id)
     {
-        dd($id);
-
-        if ($car = Car::find($id)) {
-            $car->delete();
-        } else {
-            return $this->response;
-        }
-
-        return $this->response = ['code' => 0, 'msg' => '删除成功'];
+        $this->service->remove($id);
+        $this->result['code'] = 200;
+        $this->result['message'] = 'Deleted successfully';
+        $this->result['data'] = \Cart::getContent();
+        return response()->json($this->result);
     }
 
     private function getFormData($request)
