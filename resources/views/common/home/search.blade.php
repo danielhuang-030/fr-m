@@ -35,12 +35,15 @@
                                 <span class="title" id="car_title">Cart</span>
                             </a>
                         </div>
+
+                        <?php /*
                         <div class="header-wishlist ml-20">
                             <a href="{{ url('/user/likes') }}">
                                 <span class="icon lnr lnr-heart font-30"></span>
                                 <span class="title">Collection</span>
                             </a>
                         </div>
+                        */ ?>
                     </div>
                 </div>
             </div>
