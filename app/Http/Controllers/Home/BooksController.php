@@ -126,11 +126,10 @@ class BooksController extends Controller
             $authors = $book->authors()->get();
             $categories = $book->categories()->get();
         }
-        dd($book, $authors, $categories);
+        // dd($book, $authors, $categories);
+        // $recommendProducts = Product::where('category_id', $product->category_id)->take(5)->get();
 
-        $recommendProducts = Product::where('category_id', $product->category_id)->take(5)->get();
-
-        return view('home.products.show', compact('product', 'recommendProducts'));
+        return view('home.books.show', compact('book', 'authors', 'categories'));
     }
 
     /**
@@ -198,7 +197,7 @@ class BooksController extends Controller
 
 
 
-    
+
     protected function setExample()
     {
         // author
