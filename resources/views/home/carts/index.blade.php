@@ -34,24 +34,21 @@
                                 </tr>
                                 </tfoot>
                                 <tbody id="cars_data">
-                                @inject('productPresenter', 'App\Presenters\ProductPresenter')
                                 @foreach ($items as $item)
                                 <tr class="panel alert">
                                     <td>
                                         <div class="media-body valign-middle">
                                             <h6 class="title mb-15 t-uppercase">
-                                                <a href="{{ url("/home/books/{$item->id}") }}">
-                                                    {{ $item->name }}
-                                                </a>
+                                              <a href="{{ $item->attributes->url }}" target="_blank">{{ $item->name }}</a>
                                             </h6>
                                         </div>
                                     </td>
                                     <td class="prices">{{ $item->price }}</td>
                                     <td>
                                       <div>
-                                        <input type="button" onclick="decrementValue()" value="-" />
-                                        <input type="text" name="quantity" value="{{ $item->quantity }}" maxlength="2" max="99" size="1" id="number" />
-                                        <input type="button" onclick="incrementValue()" value="+" />
+                                        <input type="button" class="decrement-qty" value="-" />
+                                        <input type="text" name="quantity" value="{{ $item->quantity }}" maxlength="2" max="{{ $item->attributes->stock }}" size="1" />
+                                        <input type="button" class="increment-qty" value="+" />
                                       </div>
                                     </td>
                                     <td class="prices">{{ $item->price * $item->quantity }}</td>
@@ -86,37 +83,40 @@
 
 @section('script')
     <script type="text/javascript">
-function incrementValue()
-{
-    var value = parseInt(document.getElementById('number').value, 10);
-    value = isNaN(value) ? 0 : value;
-    if(value<10){
-        value++;
-            document.getElementById('number').value = value;
-    }
-}
-function decrementValue()
-{
-    var value = parseInt(document.getElementById('number').value, 10);
-    value = isNaN(value) ? 0 : value;
-    if(value>1){
-        value--;
-            document.getElementById('number').value = value;
-    }
-
-}
 
 $(function() {
   $(".delete-item").on("click", function() {
-    $.post("/fr-m/cart/" + $(this).attr("data-id"), {
-      _method: "DELETE"
-    }).done(function(json) {
-      console.log(json);
-      alert(json.message);
-    });
-
+    if (confirm("Are you sure you want to delete this book?")) {
+        $.post("/fr-m/cart/" + $(this).attr("data-id"), {
+          _method: "DELETE"
+        }).done(function(json) {
+          // console.log(json);
+          location.reload();
+        });
+    }
     return false;
   });
+
+  $(".increment-qty").on("click", function() {
+    var $quantity = $(this).parent("div").find("input[name=quantity]");
+    var value = parseInt($quantity.val(), 10);
+    value = isNaN(value) ? 0 : value;
+    if (value < $quantity.prop("max")) {
+        value++;
+        $quantity.val(value);
+    }
+  });
+
+  $(".decrement-qty").on("click", function() {
+    var $quantity = $(this).parent("div").find("input[name=quantity]");
+    var value = parseInt($quantity.val(), 10);
+    value = isNaN(value) ? 0 : value;
+    if (value > 1) {
+        value--;
+        $quantity.val(value);
+    }
+  });
+
 });
     </script>
 @endsection

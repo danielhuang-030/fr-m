@@ -6,6 +6,9 @@ use Cart;
 
 class CartService
 {
+    /**
+     * construct
+     */
     public function __construct()
     {
         // fix fee
@@ -21,7 +24,15 @@ class CartService
         Cart::condition($condition);
     }
 
-    public function add($id = 0, $quantity = 1, $condition = 'new')
+    /**
+     * add
+     *
+     * @param int $id
+     * @param int $quantity
+     * @param string $condition
+     * @throws \Exception
+     */
+    public function add(int $id = 0, int $quantity = 1, string $condition = 'new')
     {
         // check book exist and in stock
         $model = new \App\Models\Book();
@@ -59,6 +70,7 @@ class CartService
                 ],
             ]);
         } else {
+            $bookPresenter = new \App\Presenters\BookPresenter();
             $cartData = [
                 'id' => $id,
                 'name' => $book->title,
@@ -66,6 +78,9 @@ class CartService
                 'quantity' => $quantity,
                 'attributes' => [
                     'condition' => $condition,
+                    'url' => $bookPresenter->getLink($book),
+                    'cover' => current($bookPresenter->getImageLinks($book)),
+                    'stock' => $bookCondition->quantity,
                 ],
             ];
             Cart::add($cartData);
@@ -73,7 +88,12 @@ class CartService
         return;
     }
 
-    public function remove($id = 0)
+    /**
+     * remove
+     *
+     * @param int $id
+     */
+    public function remove(int $id = 0)
     {
         Cart::remove($id);
     }

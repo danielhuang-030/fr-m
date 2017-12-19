@@ -26,15 +26,9 @@ class BookPresenter
         return $links;
     }
 
-    /**
-     * get image real path
-     *
-     * @param Book $book
-     * @return string
-     */
-//    public function getImageRealPath(Book $book)
-//    {
-//        return sprintf('%s/%s', static::IMAGE_PATH, sprintf('%03d', $book->id % 1000));
-//    }
+    public function getLink(Book $book)
+    {
+        return url(sprintf('book/%s', $book->slug));
+    }
 
 }

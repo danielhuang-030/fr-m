@@ -47,6 +47,7 @@ class CartsController extends Controller
     public function index()
     {
         $items = \Cart::getContent();
+        // dd($items);
         return view('home.carts.index', compact('items'));
     }
 
