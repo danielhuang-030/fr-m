@@ -6,6 +6,21 @@ use Cart;
 
 class CartService
 {
+    public function __construct()
+    {
+        // fix fee
+        $condition = new \Darryldecode\Cart\CartCondition([
+            'name' => 'FEE',
+            'type' => 'misc',
+            'target' => 'subtotal',
+            'value' => '+0.05',
+            'attributes' => [
+                'description' => 'Fix fee',
+            ],
+        ]);
+        Cart::condition($condition);
+    }
+
     public function add($id = 0, $quantity = 1, $condition = 'new')
     {
         // check book exist and in stock
