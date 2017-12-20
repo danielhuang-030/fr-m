@@ -74,6 +74,7 @@
                                 </tbody>
                             </table>
                             </form>
+                            <h3 class="h-title mb-30 t-uppercase text-right"><a href="{{ url('checkout') }}">CHECKOUT</a></h3>
                             @endif
                         </div>
                     </div>

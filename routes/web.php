@@ -54,6 +54,9 @@ Route::namespace('Home')->group(function() {
         ],
     ]);
 
+    // checkout
+    Route::get('/checkout', 'CartsController@checkout')->name('checkout');
+
     // test session
     Route::get('/cart/set/{v}', 'CartsController@set');
     Route::get('/cart/get', 'CartsController@get');
