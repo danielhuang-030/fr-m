@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Home;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::orderBy('parent_id', 'desc')->take(9)->get();
-        $hotProducts = Product::orderBy('safe_count', 'desc')->take(3)->get();
-        $latestProducts = Product::latest()->take(9)->get();
-        $users = User::orderBy('login_count', 'desc')->take(10)->get(['name', 'avatar']);
+        $model = new \App\Models\Category();
+        $categories = $model->where('parent_id', null)->orderBy('sort')->take(9)->get();
 
-        return view('home.homes.index', compact('categories', 'hotProducts', 'latestProducts', 'users'));
+        $model = new \App\Models\Book();
+        $hotProducts = $model->with(['conditions', 'images'])
+            ->join('book_conditions', 'book_conditions.book_id', '=', 'books.id')
+            ->where('book_conditions.in_stock', 1)
+            ->where('book_conditions.quantity', '>', 0)
+            ->orderBy('book_conditions.quantity')
+            ->take(3)->get();
+
+        $model = new \App\Models\Book();
+        $latestProducts = $model->with(['conditions', 'images'])->latest()->take(9)->get();
+
+        return view('home.homes.index', compact('categories', 'hotProducts', 'latestProducts'));
     }
 }

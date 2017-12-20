@@ -27,14 +27,10 @@ Route::namespace('Auth')->group(function() {
     Route::get('logout', 'LoginController@logout')->name('logout');
 });
 
-
-
 /* Home */
 Route::namespace('Home')->group(function() {
     // book
     Route::prefix('book')->group(function() {
-        Route::get('/tree', 'BooksController@tree');
-
         Route::get('/', 'BooksController@index');
         Route::get('/search', 'BooksController@search');
         Route::get('/{slug}', 'BooksController@show');
@@ -44,6 +40,7 @@ Route::namespace('Home')->group(function() {
     Route::get('/author/{slug}', 'BooksController@author');
 
     // category
+    Route::get('/categories/tree', 'BooksController@tree');
     Route::get('/category/{slug}', 'BooksController@category');
 
     // cart
@@ -74,8 +71,6 @@ Route::prefix('home')->namespace('Home')->group(function(){
     Route::resource('/products', 'ProductsController', ['only' => ['index', 'show']]);
     Route::resource('cars', 'CarsController');
 });
-
-
 
 /**********  user  **********/
 Route::middleware(['user.auth'])->prefix('user')->namespace('User')->group(function(){

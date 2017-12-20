@@ -37,8 +37,9 @@ class Category extends Model
         ];
     }
 
-    public function products()
+    public function books()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany('App\Models\Book', 'book_categories');
     }
+
 }
