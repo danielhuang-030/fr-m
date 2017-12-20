@@ -15,13 +15,9 @@ class BookPresenter
      */
     public function getImageLinks(Book $book)
     {
-        if (empty($book->images)) {
-            $images = $book->images()->get();
-        } else {
-            $images = $book->images;
-        }
-
         $links = [];
+
+        $images = $book->images;
         if (0 === $images->count()) {
             return $links;
         }
@@ -62,13 +58,8 @@ class BookPresenter
      */
     public function getPrice(Book $book)
     {
-        if (empty($book->conditions)) {
-            $conditions = $book->conditions()->get();
-        } else {
-            $conditions = $book->conditions;
-        }
-
-        if (empty($conditions)) {
+        $conditions = $book->conditions;
+        if (0 === $conditions->count()) {
             return 0.0;
         }
         $namePricePair = [];
