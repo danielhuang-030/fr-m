@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Cart;
+use Cart\CartCondition;
+use Cart\ItemCollection;
 
 class CartService
 {
@@ -11,17 +13,6 @@ class CartService
      */
     public function __construct()
     {
-        // fix fee
-        $condition = new \Darryldecode\Cart\CartCondition([
-            'name' => 'FEE',
-            'type' => 'misc',
-            'target' => 'subtotal',
-            'value' => '+0.05',
-            'attributes' => [
-                'description' => 'Fix fee',
-            ],
-        ]);
-        Cart::condition($condition);
     }
 
     /**
@@ -40,7 +31,7 @@ class CartService
 
         // check cart, upsert
         $item = Cart::get($id);
-        if ($item instanceof \Darryldecode\Cart\ItemCollection) {
+        if ($item instanceof ItemCollection) {
             Cart::update($id, [
                 'quantity' => $quantity,
             ]);
@@ -78,7 +69,7 @@ class CartService
 
         // check cart, update
         $item = Cart::get($id);
-        if (!$item instanceof \Darryldecode\Cart\ItemCollection) {
+        if (!$item instanceof ItemCollection) {
             throw new \Exception(sprintf('"%s" is not in the cart', $book->title));
             return;
         }
@@ -147,13 +138,49 @@ class CartService
 
         // check stock quantity
         $item = Cart::get($id);
-        if ($item instanceof \Darryldecode\Cart\ItemCollection && !$isUpdate) {
+        if ($item instanceof ItemCollection && !$isUpdate) {
             $quantity += $item->quantity;
         }
         if ($bookCondition->quantity < $quantity) {
             throw new \Exception(sprintf('"%s" not enough stock', $bookCondition->book->title));
         }
         return $bookCondition;
+    }
+
+    /**
+     * add fix condition
+     */
+    public function addFixCondition()
+    {
+        // fix fee
+        $condition = new CartCondition([
+            'name' => 'FEE',
+            'type' => 'misc',
+            'target' => 'subtotal',
+            'value' => '+0.05',
+            'attributes' => [
+                'description' => 'Fix fee',
+            ],
+        ]);
+        Cart::condition($condition);
+    }
+
+    /**
+     * clear
+     */
+    public function clear()
+    {
+        Cart::clear();
+    }
+
+    /**
+     * get all items
+     *
+     * @return CartCollection
+     */
+    public function getItems()
+    {
+        return Cart::getContent();
     }
 
 }

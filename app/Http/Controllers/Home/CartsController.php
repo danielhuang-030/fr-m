@@ -44,23 +44,30 @@ class CartsController extends Controller
         $this->service = $service;
     }
 
+    /**
+     * cart list
+     */
     public function index()
     {
-        $items = \Cart::getContent();
+        $items = $this->service->getItems();
         // dd($items);
         return view('home.carts.index', compact('items'));
     }
 
+    /**
+     * add cart
+     *
+     * @param Request $request
+     */
     public function store(Request $request)
     {
         // data
         $id = $request->get('id', 0);
         $quantity = $request->get('qty', 1);
-        $condition = $request->get('cond', 'new');
 
         // add cart
         try {
-            $this->service->add($id, $quantity, $condition);
+            $this->service->add($id, $quantity);
         } catch (\Exception $e) {
             $this->result['code'] = 403;
             $this->result['message'] = $e->getMessage();
@@ -69,10 +76,15 @@ class CartsController extends Controller
 
         $this->result['code'] = 200;
         $this->result['message'] = 'Add to Cart successfully';
-        $this->result['data'] = \Cart::getContent();
+        $this->result['data'] = $this->service->getItems();
         return response()->json($this->result);
     }
 
+    /**
+     * renew cart
+     *
+     * @param Request $request
+     */
     public function renew(Request $request)
     {
         // data
@@ -89,38 +101,27 @@ class CartsController extends Controller
 
         $this->result['code'] = 200;
         $this->result['message'] = 'Renew to Cart successfully';
-        $this->result['data'] = \Cart::getContent();
+        $this->result['data'] = $this->service->getItems();
         return response()->json($this->result);
     }
 
-    protected function isGreaterStock(array $data)
-    {
-        // buy numbers > count
-        $product = Product::find($data['product_id']);
-
-        if ($data['numbers'] > $product->productDetail->count) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function destroy($id)
+    /**
+     * delete item from cart
+     *
+     * @param int $id
+     */
+    public function destroy(int $id)
     {
         $this->service->remove($id);
         $this->result['code'] = 200;
         $this->result['message'] = 'Deleted successfully';
-        $this->result['data'] = \Cart::getContent();
+        $this->result['data'] = $this->service->getItems();
         return response()->json($this->result);
     }
 
-    private function getFormData($request)
+    public function checkout()
     {
-        $form_data = $request->only('product_id');
-        $form_data['user_id'] = $this->guard()->user()->id;
-        $form_data['numbers'] = $request->input('numbers', 1);
-
-        return $form_data;
+        dd('checkout');
     }
 
     private function guard()
