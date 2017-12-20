@@ -17,6 +17,8 @@
                                 </thead>
                             </table>
                             @else
+                            <form action="" method="POST">
+                            {{ csrf_field() }}
                             <table id="cart_list" class="cart-list mb-30">
                                 <thead class="panel t-uppercase">
                                 <tr>
@@ -30,7 +32,8 @@
                                 <tfoot class="panel t-uppercase" style="background-color: #B9E9FA; ">
                                 <tr>
                                   <th colspan="3" class="text-right">Total</th>
-                                  <th colspan="3" style="padding: 15px; vertical-align: middle; color: #555; ">{{ \Cart::getTotal() }}</th>
+                                  <th style="padding: 15px; vertical-align: middle; color: #555; ">{{ \Cart::getTotal() }}</th>
+                                  <th><a class="update-cart" href="#">[UPDATE]</a></th>
                                 </tr>
                                 </tfoot>
                                 <tbody id="cars_data">
@@ -47,7 +50,7 @@
                                     <td>
                                       <div>
                                         <input type="button" class="decrement-qty" value="-" />
-                                        <input type="text" name="quantity" value="{{ $item->quantity }}" maxlength="2" max="{{ $item->attributes->stock }}" size="1" />
+                                        <input type="text" name="qty[{{ $item->id }}]" class="qty" value="{{ $item->quantity }}" maxlength="2" max="{{ $item->attributes->stock }}" size="1" />
                                         <input type="button" class="increment-qty" value="+" />
                                       </div>
                                     </td>
@@ -70,6 +73,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            </form>
                             @endif
                         </div>
                     </div>
@@ -98,7 +102,7 @@ $(function() {
   });
 
   $(".increment-qty").on("click", function() {
-    var $quantity = $(this).parent("div").find("input[name=quantity]");
+    var $quantity = $(this).parent("div").find("input.qty");
     var value = parseInt($quantity.val(), 10);
     value = isNaN(value) ? 0 : value;
     if (value < $quantity.prop("max")) {
@@ -108,13 +112,32 @@ $(function() {
   });
 
   $(".decrement-qty").on("click", function() {
-    var $quantity = $(this).parent("div").find("input[name=quantity]");
+    var $quantity = $(this).parent("div").find("input.qty");
     var value = parseInt($quantity.val(), 10);
     value = isNaN(value) ? 0 : value;
     if (value > 1) {
         value--;
         $quantity.val(value);
     }
+  });
+
+  // update cart
+  $(".update-cart").on("click", function() {
+    console.log('uodate cart', $(this).parents("form").serialize());
+
+    $.ajax({
+      url: "/fr-m/cart/renew",
+      type: "PUT",
+      data: $(this).parents("form").serialize(),
+      dataType: "json"
+    }).done(function(json) {
+      console.log(json);
+      alert(json.message);
+      if (200 == json.code) {
+          location.reload();
+      }
+    });
+    return false;
   });
 
 });

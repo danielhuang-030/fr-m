@@ -119,7 +119,7 @@ class BooksController extends Controller
     {
         // book
         $model = new \App\Models\Book();
-        $book = $model->where('slug', $slug)->first();
+        $book = $model->where('slug', $slug)->with(['conditions', 'images'])->first();
         $authors = null;
         $categories = null;
         if ($book instanceof \App\Models\Book) {

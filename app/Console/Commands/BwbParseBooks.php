@@ -194,7 +194,7 @@ class BwbParseBooks extends BwbCommand
                     // image (skip if images exists)
                     $model = new \App\Models\BookImage();
                     $bookImage = $model->where('book_id', $bookId)->first();
-                    if (null === $bookImage) {
+                    if (null === $bookImage && "" !== $book->ImageURL) {
                         $bookImage = new \App\Models\BookImage();
                         $bookImage->book_id = $bookId;
                         $bookImage->file = sprintf('%s/%s', static::BWB_IMAGE_URL, $book->ImageURL);

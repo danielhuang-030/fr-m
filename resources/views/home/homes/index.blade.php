@@ -29,11 +29,11 @@
 
                             @inject('bookPresenter', 'App\Presenters\BookPresenter')
                             @foreach ($hotProducts as $hotProduct)
-                                <div class="deal-single panel item">
+                                <div class="deal-single panel item {{ $hotProduct->isbn13 }}}">
                                     <a href="{{ $bookPresenter->getLink($hotProduct) }}">
                                         <figure class="deal-thumbnail embed-responsive embed-responsive-16by9" data-bg-img="{{ $bookPresenter->getCover($hotProduct) }}">
                                             <div class="label-discount top-10 right-10" style="width: auto;">
-                                                {{ $bookPresenter->getPrice($hotProduct) }} ￥
+                                                {{ $bookPresenter->getPrice($hotProduct) }}
                                             </div>
                                         </figure>
                                     </a>

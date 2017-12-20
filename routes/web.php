@@ -44,11 +44,12 @@ Route::namespace('Home')->group(function() {
     Route::get('/category/{slug}', 'BooksController@category');
 
     // cart
+    Route::put('/cart/renew', 'CartsController@renew');
     Route::resource('/cart', 'CartsController', [
         'only' => [
             'index',
             'store',
-            'update',
+            // 'update',
             'destroy',
         ],
     ]);

@@ -73,9 +73,24 @@ class CartsController extends Controller
         return response()->json($this->result);
     }
 
-    public function update(Request $request, int $id)
+    public function renew(Request $request)
     {
-        dd($request->json(), $id);
+        // data
+        $quantityData = $request->get('qty', []);
+
+        // renew cart
+        try {
+            $this->service->renew($quantityData);
+        } catch (\Exception $e) {
+            $this->result['code'] = 403;
+            $this->result['message'] = $e->getMessage();
+            return response()->json($this->result);
+        }
+
+        $this->result['code'] = 200;
+        $this->result['message'] = 'Renew to Cart successfully';
+        $this->result['data'] = \Cart::getContent();
+        return response()->json($this->result);
     }
 
     protected function isGreaterStock(array $data)

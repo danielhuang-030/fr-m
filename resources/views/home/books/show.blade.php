@@ -20,7 +20,8 @@
                     </script>
 
                     <div class="tb-booth tb-pic tb-s310">
-                        <img src="{{ current($bookPresenter->getImageLinks($book)) }}" alt="{{ $book->name }}" id="jqzoom" />
+                        @inject('bookPresenter', 'App\Presenters\BookPresenter')
+                        <img src="{{ $bookPresenter->getCover($book) }}" alt="{{ $book->name }}" id="jqzoom" />
                     </div>
                     <ul class="tb-thumb" id="thumblist">
                         @foreach ($bookPresenter->getImageLinks($book) as $key => $image)
@@ -52,7 +53,7 @@
                     <div class="tb-detail-price">
                         <li class="price iteminfo_price">
                             <dt>Price</dt>
-                            <dd><b class="sys_item_price">{{ $book->conditions()->first()->price }}</b>  </dd>
+                            <dd><b class="sys_item_price">{{ $book->conditions->first()->price }}</b>  </dd>
                         </li>
                         <div class="clear"></div>
                     </div>
@@ -82,7 +83,7 @@
                                     <form class="theme-signin" name="" action="" method="post">
 
                                         <div class="theme-signin-left">
-                                            @foreach ($book->conditions()->get() as $condition)
+                                            @foreach ($book->conditions as $condition)
                                                 <div class="theme-options">
                                                     <div class="cart-title">Condition</div>
                                                     <ul>
@@ -101,7 +102,7 @@
                                                     <input id="min" class="am-btn am-btn-default" type="button" value="-" />
                                                     <input id="text_box" name="numbers" type="text" value="1" style="width:30px;" />
                                                     <input id="add" class="am-btn am-btn-default"  type="button" value="+" />
-                                                    <span id="Stock" class="tb-hidden">stock <span class="stock">{{ $book->conditions()->first()->quantity }}</span></span>
+                                                    <span id="Stock" class="tb-hidden">stock <span class="stock">{{ $book->conditions->first()->quantity }}</span></span>
                                                 </dd>
                                             </div>
                                     <div class="clear"></div>
@@ -149,11 +150,12 @@
         */ ?>
         <li>
             <div class="clearfix tb-btn tb-btn-basket">
-                <a title="ADD CART" href="javascript:;"  id="add-car"><i></i>ADD CART</a>
+                <a title="ADD CART" href="javascript:;"  class="add-cart"><i></i>ADD CART</a>
             </div>
         </li>
     </div>
     <input type="hidden" name="book_id" value="{{ $book->id }}">
+    <input type="hidden" name="condition_id" value="{{ $book->conditions->first()->id }}">
 
     </div>
 
@@ -207,9 +209,6 @@
 
     </div>
     </div>
-    <form id="pay_form" action="{{ url('/user/pay/show') }}" method="post">
-        {{ csrf_field() }}
-    </form>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
@@ -225,12 +224,11 @@ $(function() {
   });
 
   // add cart
-  $("#add-car").on("click", function() {
+  $(".add-cart").on("click", function() {
     console.log('add cart', $("input[name=book_id]").val(), $("input[name=numbers]").val());
 
     $.post("/fr-m/cart", {
-      id: $("input[name=book_id]").val(),
-      cond: "new",
+      id: $("input[name=condition_id]").val(),
       qty: $("input[name=numbers]").val(),
     }).done(function(json) {
       console.log(json);

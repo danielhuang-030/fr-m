@@ -29,45 +29,20 @@ class CartService
      *
      * @param int $id
      * @param int $quantity
-     * @param string $condition
+     * @return void
      * @throws \Exception
      */
-    public function add(int $id = 0, int $quantity = 1, string $condition = 'new')
+    public function add(int $id = 0, int $quantity = 1)
     {
-        // check book exist and in stock
-        $model = new \App\Models\Book();
-        $book = $model->select('books.*')
-            ->with('conditions')
-            ->join('book_conditions', 'book_conditions.book_id', '=', 'books.id')
-            ->where('books.id', $id)
-            ->where('book_conditions.condition', $condition)
-            ->where('book_conditions.in_stock', 1)
-            ->where('book_conditions.quantity', '>', 0)
-            ->first();
-        if (!$book instanceof \App\Models\Book) {
-            throw new \Exception('Book does not exist or is not in stock');
-        }
+        // validate
+        $bookCondition = $this->validate($id, $quantity);
+        $book = $bookCondition->book;
 
-        // check cart
+        // check cart, upsert
         $item = Cart::get($id);
-        // var_dump($item);exit;
-        if ($item instanceof \Darryldecode\Cart\ItemCollection) {
-            $quantity += $item->quantity;
-        }
-
-        // check stock quantity
-        $bookCondition = $book->conditions()->first();
-        if ($bookCondition->quantity < $quantity) {
-            throw new \Exception('Not enough stock');
-        }
-
-        // upsert
         if ($item instanceof \Darryldecode\Cart\ItemCollection) {
             Cart::update($id, [
-                'quantity' => [
-                    'relative' => false,
-                    'value' => $quantity,
-                ],
+                'quantity' => $quantity,
             ]);
         } else {
             $bookPresenter = new \App\Presenters\BookPresenter();
@@ -77,9 +52,9 @@ class CartService
                 'price' => $bookCondition->price,
                 'quantity' => $quantity,
                 'attributes' => [
-                    'condition' => $condition,
+                    'condition' => $bookCondition->condition,
                     'url' => $bookPresenter->getLink($book),
-                    'cover' => current($bookPresenter->getImageLinks($book)),
+                    'cover' => $bookPresenter->getCover($book),
                     'stock' => $bookCondition->quantity,
                 ],
             ];
@@ -89,13 +64,96 @@ class CartService
     }
 
     /**
+     * update
+     *
+     * @param int $id
+     * @param int $quantity
+     * @return void
+     * @throws \Exception
+     */
+    public function update(int $id = 0, int $quantity = 1)
+    {
+        // validate
+        $book = $this->validate($id, $quantity, true);
+
+        // check cart, update
+        $item = Cart::get($id);
+        if (!$item instanceof \Darryldecode\Cart\ItemCollection) {
+            throw new \Exception(sprintf('"%s" is not in the cart', $book->title));
+            return;
+        }
+        Cart::update($id, [
+            'quantity' => [
+                'relative' => false,
+                'value' => $quantity,
+            ],
+        ]);
+        return;
+    }
+
+    /**
      * remove
      *
      * @param int $id
+     * @return void
      */
     public function remove(int $id = 0)
     {
         Cart::remove($id);
+    }
+
+    /**
+     * renew
+     *
+     * @param array $idQtyPair
+     * @return void
+     */
+    public function renew(array $idQtyPair = [])
+    {
+        if (empty($idQtyPair) || Cart::isEmpty()) {
+            Cart::clear();
+            return;
+        }
+
+        $items = Cart::getContent();
+        foreach ($items as $item) {
+            $id = $item->id;
+            if (!array_key_exists($id, $idQtyPair) || 0 === (int) $idQtyPair[$id]) {
+                Cart::remove($id);
+                continue;
+            }
+            $this->update($item->id, $idQtyPair[$id]);
+        }
+        return;
+    }
+
+    /**
+     * validate
+     *
+     * @param int $id
+     * @param int $quantity
+     * @param bool $isUpdate
+     * @return \App\Models\BookCondition
+     * @throws \Exception
+     */
+    protected function validate(int $id = 0, int $quantity = 1, $isUpdate = false)
+    {
+        // check book exist and in stock
+        $model = new \App\Models\BookCondition();
+        $bookCondition = $model->with(['book'])->where('id', $id)->inStock()->first();
+        if (!$bookCondition instanceof \App\Models\BookCondition) {
+            throw new \Exception(sprintf('"%s" does not exist or is not in stock', $bookCondition->book->title));
+        }
+
+        // check stock quantity
+        $item = Cart::get($id);
+        if ($item instanceof \Darryldecode\Cart\ItemCollection && !$isUpdate) {
+            $quantity += $item->quantity;
+        }
+        if ($bookCondition->quantity < $quantity) {
+            throw new \Exception(sprintf('"%s" not enough stock', $bookCondition->book->title));
+        }
+        return $bookCondition;
     }
 
 }
