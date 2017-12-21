@@ -42,11 +42,6 @@ class User extends Authenticatable
         return $this->hasOne(Subscribe::class);
     }
 
-    public function cars()
-    {
-        return $this->hasMany(Car::class);
-    }
-
     public function orders()
     {
         return $this->hasMany(Order::class);
