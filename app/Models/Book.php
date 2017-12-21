@@ -27,12 +27,12 @@ class Book extends Model
 
     public function authors()
     {
-        return $this->belongsToMany('\App\Models\Author', 'book_authors');
+        return $this->belongsToMany(Author::class, 'book_authors');
     }
 
     public function categories()
     {
-        return $this->belongsToMany('\App\Models\Category', 'book_categories');
+        return $this->belongsToMany(Category::class, 'book_categories');
     }
 
     public function images()
