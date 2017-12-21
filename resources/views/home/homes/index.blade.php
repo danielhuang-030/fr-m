@@ -57,7 +57,7 @@
             <section class="section latest-deals-area ptb-30">
                 <header class="panel ptb-15 prl-20 pos-r mb-30">
                     <h3 class="section-title font-18">Latest Books</h3>
-                    <a href="{{ url('/home/products') }}" class="btn btn-o btn-xs pos-a right-10 pos-tb-center">Check all</a>
+                    <a href="{{ url('/book') }}" class="btn btn-o btn-xs pos-a right-10 pos-tb-center">Check all</a>
                 </header>
 
                 <div class="row row-masnory row-tb-20">
@@ -111,45 +111,6 @@
     <script src="{{ asset('assets/admin/lib/lazyload/lazyload.js') }}"></script>
     <script src="{{ asset('assets/user/layer/2.4/layer.js') }}"></script>
     <script>
-
-        var csrf_token = "{{ csrf_token() }}";
-        $('#subscribe_btn').click(function(){
-            var _url = "{{ url('user/subscribe') }}";
-            var _email = $('#subscribe_email').val();
-            var that = $(this);
-            that.attr('disabled', true);
-
-            $.post(_url, {email:_email, _token:csrf_token}, function(res){
-
-                that.attr('disabled', false);
-
-                if (res.code == 200) {
-                    that.hide().next().show();
-                    layer.msg(res.msg, {icon: 1});
-                } else {
-                    layer.msg(res.msg, {icon: 2});
-                }
-
-            });
-        });
-
-        $('#desubscribe_btn').click(function(){
-            var _url = "{{ url('user/desubscribe') }}";
-            var that = $(this);
-            that.attr('disabled', true);
-
-            $.post(_url, {_token:csrf_token}, function(res){
-                that.attr('disabled', false);
-
-                if (res.code == 200) {
-                    that.hide().prev().show();
-                    layer.msg(res.msg, {icon: 1});
-                } else {
-                    layer.msg(res.msg, {icon: 2});
-                }
-
-            });
-        });
 
     </script>
 @endsection

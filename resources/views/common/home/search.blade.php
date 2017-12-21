@@ -10,7 +10,7 @@
             <div class="header-search col-md-9">
                 <div class="row row-tb-10 ">
                     <div class="col-sm-8">
-                        <form class="search-form" method="get" action="{{ url('/home/products/search') }}">
+                        <form class="search-form" method="get" action="{{ url('/book/search') }}">
                             <div class="input-group">
                                 <input type="text" name="keyword" class="form-control input-lg search-input" placeholder="Keyword..." required="required">
                                 <div class="input-group-btn">

@@ -31,7 +31,7 @@ class CartService
 
         // check cart, upsert
         $item = Cart::get($id);
-        if ($item instanceof ItemCollection) {
+        if (null !== $item) {
             Cart::update($id, [
                 'quantity' => $quantity,
             ]);
@@ -65,12 +65,12 @@ class CartService
     public function update(int $id = 0, int $quantity = 1)
     {
         // validate
-        $book = $this->validate($id, $quantity, true);
+        $bookCondition = $this->validate($id, $quantity, true);
 
         // check cart, update
         $item = Cart::get($id);
-        if (!$item instanceof ItemCollection) {
-            throw new \Exception(sprintf('"%s" is not in the cart', $book->title));
+        if (null === $item) {
+            throw new \Exception(sprintf('"%s" is not in the cart', $bookCondition->book->title));
             return;
         }
         Cart::update($id, [

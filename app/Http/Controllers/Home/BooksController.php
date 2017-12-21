@@ -107,7 +107,7 @@ class BooksController extends Controller
         })->paginate(10);
         dd($books);
 
-        return view('home.products.search', compact('products'));
+        // return view('home.books.search', compact('books'));
     }
 
     /**
