@@ -4,7 +4,9 @@
 Auth::routes();
 
 /* Auth */
-Route::namespace('Auth')->group(function() {
+Route::group([
+    'namespace' => 'Auth',
+], function() {
     // register
     Route::prefix('register')->group(function() {
         // account active link
@@ -28,7 +30,9 @@ Route::namespace('Auth')->group(function() {
 });
 
 /* Home */
-Route::namespace('Home')->group(function() {
+Route::group([
+   'namespace' => 'Home',
+], function() {
     // book
     Route::prefix('book')->group(function() {
         Route::get('/', 'BooksController@index');
@@ -44,7 +48,8 @@ Route::namespace('Home')->group(function() {
     Route::get('/category/{slug}', 'BooksController@category');
 
     // cart
-    Route::put('/cart/renew', 'CartsController@renew');
+    Route::put('/cart/renew', 'CartsController@renew')->name('cart.renew');
+    Route::delete('/cart/clear', 'CartsController@clear')->name('cart.clear');
     Route::resource('/cart', 'CartsController', [
         'only' => [
             'index',
@@ -56,8 +61,11 @@ Route::namespace('Home')->group(function() {
 
     // checkout
     Route::get('/checkout', 'CheckoutsController@index')->name('checkout');
+    Route::get('/checkout/cart', 'CheckoutsController@cart')->name('checkout.cart');
 
 });
+
+
 
 /**********  home  **********/
 Route::get('/', 'Home\HomeController@index');
