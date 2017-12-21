@@ -60,8 +60,12 @@ Route::group([
     ]);
 
     // checkout
-    Route::get('/checkout', 'CheckoutsController@index')->name('checkout');
-    Route::get('/checkout/cart', 'CheckoutsController@cart')->name('checkout.cart');
+    Route::prefix('checkout')->group(function() {
+        Route::get('/', 'CheckoutsController@index')->name('checkout');
+
+        Route::get('/cart', 'CheckoutsController@cart')->name('checkout.cart');
+        Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
+    });
 
 });
 

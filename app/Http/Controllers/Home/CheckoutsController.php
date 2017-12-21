@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Home;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
@@ -29,16 +30,49 @@ class CheckoutsController extends Controller
     public function __construct(CartService $service)
     {
         $this->service = $service;
+
+        // check cart is empty, add fixed fee
+        $this->middleware(function($request, $next) {
+            if ($this->service->isEmpty()) {
+                return redirect('/');
+            }
+            $this->service->clearConditions();
+            $this->service->addConditionFixed();
+
+            return $next($request);
+        }, [
+            'only' => [
+                'index',
+            ]
+        ]);
     }
 
     /**
-     * cart list
+     * checkout
      */
     public function index()
     {
+        $states = (new \App\Models\State())->get();
+        return view('home.checkouts.index', compact('states'));
+    }
+
+    public function cart()
+    {
         $items = $this->service->getItems();
-        // dd($items);
-        return view('home.checkouts.index', compact('items'));
+        $conditions = $this->service->getConditions();
+        $subTotal = $this->service->getSubTotal();
+        $total = $this->service->getTotal();
+        return view('home.checkouts.cart', compact('items', 'conditions', 'subTotal', 'total'));
+    }
+
+    public function tax(Request $request)
+    {
+        $stateId = (int) $request->input('id', 0);
+        $this->service->addConditionTax($stateId);
+
+        return response()->json([
+            'code' => 200,
+        ]);
     }
 
     private function guard()
