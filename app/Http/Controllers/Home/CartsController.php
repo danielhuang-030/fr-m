@@ -29,6 +29,13 @@ class CartsController extends Controller
     public function __construct(CartService $service)
     {
         $this->service = $service;
+
+        $this->middleware(function($request, $next) {
+            // clear conditions
+            $this->service->clearConditions();
+            return $next($request);
+        });
+
     }
 
     /**
@@ -68,6 +75,20 @@ class CartsController extends Controller
     }
 
     /**
+     * delete item from cart
+     *
+     * @param int $id
+     */
+    public function destroy(int $id)
+    {
+        $this->service->remove($id);
+        $this->result['code'] = 200;
+        $this->result['message'] = 'Deleted successfully';
+        $this->result['data'] = $this->service->getItems();
+        return response()->json($this->result);
+    }
+
+    /**
      * renew cart
      *
      * @param Request $request
@@ -93,22 +114,23 @@ class CartsController extends Controller
     }
 
     /**
-     * delete item from cart
-     *
-     * @param int $id
+     * clear cart
      */
-    public function destroy(int $id)
+    public function clear()
     {
-        $this->service->remove($id);
+        // clear cart
+        try {
+            $this->service->clearAll();
+        } catch (\Exception $e) {
+            $this->result['code'] = 403;
+            $this->result['message'] = $e->getMessage();
+            return response()->json($this->result);
+        }
+
         $this->result['code'] = 200;
-        $this->result['message'] = 'Deleted successfully';
+        $this->result['message'] = 'Clear Cart successfully';
         $this->result['data'] = $this->service->getItems();
         return response()->json($this->result);
-    }
-
-    public function checkout()
-    {
-        dd('checkout');
     }
 
     private function guard()

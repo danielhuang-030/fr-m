@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use Cart;
-use Cart\CartCondition;
-use Cart\ItemCollection;
 
 class CartService
 {
@@ -138,7 +136,7 @@ class CartService
 
         // check stock quantity
         $item = Cart::get($id);
-        if ($item instanceof ItemCollection && !$isUpdate) {
+        if (null !== $item && !$isUpdate) {
             $quantity += $item->quantity;
         }
         if ($bookCondition->quantity < $quantity) {
@@ -148,39 +146,106 @@ class CartService
     }
 
     /**
-     * add fix condition
+     * add fixed condition
      */
-    public function addFixCondition()
+    public function addConditionFixed()
     {
-        // fix fee
-        $condition = new CartCondition([
-            'name' => 'FEE',
+        // fixed fee
+        $condition = new \Darryldecode\Cart\CartCondition([
+            'name' => 'FIXED FEE',
             'type' => 'misc',
             'target' => 'subtotal',
             'value' => '+0.05',
+            'order' => 9999,
             'attributes' => [
-                'description' => 'Fix fee',
+                'description' => 'Fixed fee',
             ],
         ]);
         Cart::condition($condition);
     }
 
     /**
-     * clear
+     * add tax condition
+     *
+     * @param int $stateId
      */
-    public function clear()
+    public function addConditionTax(int $stateId)
+    {
+        $model = new \App\Models\State();
+        $state = $model->with(['tax'])->find($stateId);
+        if (null === $state->tax) {
+            Cart::removeConditionsByType('tax');
+            return;
+        }
+
+        // tax
+        $condition = new \Darryldecode\Cart\CartCondition([
+            'name' => sprintf('%s TAX', $state->name),
+            'type' => 'tax',
+            'target' => 'subtotal',
+            'value' => sprintf('+%s%%', $state->tax->tax),
+            'order' => 100,
+            'attributes' => [
+                'description' => 'State tax',
+            ],
+        ]);
+        Cart::condition($condition);
+    }
+
+    /**
+     * clear items and conditions
+     */
+    public function clearAll()
     {
         Cart::clear();
+        Cart::clearCartConditions();
+    }
+
+    /**
+     * clear conditions
+     */
+    public function clearConditions()
+    {
+        Cart::clearCartConditions();
     }
 
     /**
      * get all items
      *
-     * @return CartCollection
+     * @return \Darryldecode\Cart\CartCollection
      */
     public function getItems()
     {
         return Cart::getContent();
     }
 
+    /**
+     * get all collections
+     *
+     * @return \Darryldecode\Cart\CartCondition
+     */
+    public function getConditions()
+    {
+        return Cart::getConditions();
+    }
+
+    /**
+     * cart is empty
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return Cart::isEmpty();
+    }
+
+    public function getSubTotal()
+    {
+        return Cart::getSubTotal();
+    }
+
+    public function getTotal()
+    {
+        return Cart::getTotal();
+    }
 }

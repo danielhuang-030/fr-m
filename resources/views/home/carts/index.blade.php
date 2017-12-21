@@ -32,8 +32,8 @@
                                 <tfoot class="panel t-uppercase" style="background-color: #B9E9FA; ">
                                 <tr>
                                   <th colspan="3" class="text-right">Total</th>
-                                  <th style="padding: 15px; vertical-align: middle; color: #555; ">{{ \Cart::getTotal() }}</th>
-                                  <th><a class="update-cart" href="#">[UPDATE]</a></th>
+                                  <th style="padding: 15px; vertical-align: middle; color: #555; ">{{ \Cart::getSubTotal() }}</th>
+                                  <th><a class="update-cart" href="#">[UPDATE]</a>&nbsp;<a class="clear-cart" href="#">[CLEAR]</a></th>
                                 </tr>
                                 </tfoot>
                                 <tbody id="cars_data">
@@ -62,6 +62,7 @@
                                     </td>
                                 </tr>
                                 @endforeach
+                                <?php /*
                                 @foreach (\Cart::getConditions() as $cartCondition)
                                 <tr class="panel alert">
                                     <td>{{ $cartCondition->getName() }}</td>
@@ -71,6 +72,7 @@
                                     <td></td>
                                 </tr>
                                 @endforeach
+                                */ ?>
                                 </tbody>
                             </table>
                             </form>
@@ -139,6 +141,22 @@ $(function() {
       }
     });
     return false;
+  });
+
+  // clear-cart
+  $(".clear-cart").on("click", function() {
+    $.ajax({
+      url: "/fr-m/cart/clear",
+      type: "DELETE",
+      dataType: "json"
+    }).done(function(json) {
+      alert(json.message);
+      if (200 == json.code) {
+          location.reload();
+      }
+    });
+    return false;
+
   });
 
 });
