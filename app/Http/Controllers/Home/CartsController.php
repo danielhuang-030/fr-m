@@ -14,19 +14,6 @@ class CartsController extends Controller
         'data' => '',
     ];
 
-    public function set($v)
-    {
-        session()->put('test-session', $v);
-        \Session::put('test-session', $v);
-    }
-
-    public function get()
-    {
-        $v = session()->get('test-session');
-        // dd(session()->all());
-        dd(\Session::all());
-    }
-
     /**
      * CartService
      *
