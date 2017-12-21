@@ -6,10 +6,17 @@ use Storage;
 
 class UserPresenter
 {
+    /**
+     * default image
+     *
+     * @var string
+     */
+    const DEFAULT_IMAGE = '/images/avatar.png';
+
     public function getAvatarLink($link)
     {
         if (empty($link)) {
-            $link = sprintf('%s/images/avatar.png', config('app.url'));
+            $link = url(static::DEFAULT_IMAGE);
         }
         return starts_with($link, 'http') ? $link : Storage::disk('public')->url($link);
     }
