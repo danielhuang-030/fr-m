@@ -67,6 +67,7 @@ Route::group([
         Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
     });
 
+    Route::get('/payment', 'PaymentsController@index')->name('payment');
 });
 
 
