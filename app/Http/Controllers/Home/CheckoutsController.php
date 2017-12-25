@@ -37,7 +37,7 @@ class CheckoutsController extends Controller
                 return redirect('/');
             }
             $this->service->clearConditions();
-            $this->service->addConditionFixed();
+            $this->service->addConditionCarbonBalance();
 
             return $next($request);
         }, [

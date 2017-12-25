@@ -146,19 +146,19 @@ class CartService
     }
 
     /**
-     * add fixed condition
+     * add carbon balance condition
      */
-    public function addConditionFixed()
+    public function addConditionCarbonBalance()
     {
         // fixed fee
         $condition = new \Darryldecode\Cart\CartCondition([
-            'name' => 'FIXED FEE',
+            'name' => 'Carbon Balance',
             'type' => 'misc',
             'target' => 'subtotal',
             'value' => '+0.05',
             'order' => 9999,
             'attributes' => [
-                'description' => 'Fixed fee',
+                'description' => 'Carbon Balance',
             ],
         ]);
         Cart::condition($condition);
@@ -171,10 +171,11 @@ class CartService
      */
     public function addConditionTax(int $stateId)
     {
+        Cart::removeConditionsByType('tax');
+
         $model = new \App\Models\State();
         $state = $model->with(['tax'])->find($stateId);
         if (null === $state->tax) {
-            Cart::removeConditionsByType('tax');
             return;
         }
 
