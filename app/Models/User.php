@@ -37,9 +37,9 @@ class User extends Authenticatable
         return $this->hasMany(Address::class);
     }
 
-    public function subscribe()
+    public function gateway()
     {
-        return $this->hasOne(Subscribe::class);
+        return $this->belongsTo(Gateway::class);
     }
 
     public function orders()
