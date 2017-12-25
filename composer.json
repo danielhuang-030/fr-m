@@ -21,6 +21,7 @@
         "mews/captcha": "^2.1",
         "renatomarinho/laravel-page-speed": "^1.8",
         "spatie/laravel-permission": "^2.7",
+        "stripe/stripe-php": "^5.8",
         "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
