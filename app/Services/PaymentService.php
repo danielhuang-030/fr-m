@@ -30,7 +30,12 @@ class PaymentService
         if (null === $gateway) {
             throw new Exception('Can not get payment gateway');
         }
-        return $gateway->pay($inputData, $user);
+
+        if (!$gateway->pay($inputData, $user)) {
+            dd($gateway->getErrorMessage());
+        }
+        return true;
+        // return $gateway->pay($inputData, $user);
     }
 
     /**
@@ -59,7 +64,7 @@ class PaymentService
 
         // get payment gateway
         $className = sprintf('\App\Services\Gateways\%s', $gateway->factory);
-        return new $className(json_decode($gateway->config));
+        return new $className($gateway);
     }
 
 }

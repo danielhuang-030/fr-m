@@ -2,13 +2,14 @@
 
 namespace App\Services\Gateways;
 
+use DB;
+
 class Stripe extends Gateway
 {
-    public function __construct($config)
+    protected function init()
     {
-        parent::__construct($config);
-
-        \Stripe\Stripe::setApiKey($this->config->secretKey);
+        $config = json_decode($this->gateway->config);
+        \Stripe\Stripe::setApiKey($config->secretKey);
     }
 
     protected function createCustomer()
@@ -30,24 +31,77 @@ class Stripe extends Gateway
     protected function createCard()
     {
         $customer = \Stripe\Customer::retrieve($this->user->external_id);
-        $token = \Stripe\Token::create([
-            'card' => $this->inputData['card'],
-            // 'customer' => $customer,
-        ]);
-        $card = $customer->sources->create([
-            'source' => $token->id
-        ]);
-        dd($card);
+        if (empty($this->inputData['card'])) {
+            throw new \Exception('No credit card data from input');
+        }
+        $cardData = $this->inputData['card'];
 
+        // check from payment_profiles
+        $isExist = false;
+        $model = new \App\Models\PaymentProfiles();
+        $paymentProfiles = $model->where('user_id', $this->user->id)->get();
+        foreach ($paymentProfiles as $paymentProfile) {
+            if ($cardData['number'] == $paymentProfile->card_number && $cardData['exp_month'] == $paymentProfile->expiration_month && $cardData['exp_year'] == $paymentProfile->expiration_year) {
+                $this->paymentProfile = $paymentProfile;
+                $isExist = true;
+                break;
+            }
+        }
+
+        // if exist, return
+        if ($isExist) {
+            return;
+        }
+
+        // add card
+        DB::beginTransaction();
+        try {
+            // add card to Stripe
+            $token = \Stripe\Token::create([
+                'card' => $cardData,
+                // 'customer' => $customer,
+            ]);
+            $card = $customer->sources->create([
+                'source' => $token->id
+            ]);
+
+            // add card to payment_profiles
+            $paymentProfile = new \App\Models\PaymentProfiles();
+            $paymentProfile->card_type = strtolower($card->brand);
+            $paymentProfile->card_number = $cardData['number'];
+            $paymentProfile->expiration_month = $cardData['exp_month'];
+            $paymentProfile->expiration_year = $cardData['exp_year'];
+            $paymentProfile->user_id = $this->user->id;
+            $paymentProfile->gateway_id = $this->gateway->id;
+            $paymentProfile->external_id = $card->id;
+            $paymentProfile->funding_type = strtolower($card->funding);
+            $paymentProfile->vault_token = $card->customer;
+            $paymentProfile->save();
+            $this->paymentProfile = $paymentProfile;
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+        DB::commit();
+        return;
     }
 
     protected function charge()
     {
+        if (null === $this->paymentProfile) {
+            throw new \Exception('No PaymentProfile data');
+        }
 
+        $charge = \Stripe\Charge::create([
+            'amount' => $this->inputData['amount'] * 100,
+            'currency' => $this->inputData['currency'],
+            'customer' => $this->user->external_id,
+            'source' => $this->paymentProfile->external_id,
+            'description' => "charge test from daniel 2017-12-26 002"
+        ]);
     }
 
-    protected function createPaymentProfile()
-    {}
     protected function createTransaction()
     {}
 }
