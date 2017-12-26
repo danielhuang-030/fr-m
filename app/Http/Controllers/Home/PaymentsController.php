@@ -25,6 +25,8 @@ class PaymentsController extends BaseController
     {
         $gatewayName = 'stripe';
         $r = $this->paymentService->pay([
+            'amount' => 15.49,
+            'currency' => 'USD',
             'user_id' => 22,
             'card' => [
                 'number'    => '4242424242424242',
@@ -33,42 +35,50 @@ class PaymentsController extends BaseController
                 'exp_year'  => 2020,
             ],
         ], $gatewayName);
+        dd($r);
 
         $model = new \App\Models\Gateway();
         $gateway = $model->where('name', $gatewayName)->first();
         $config = json_decode($gateway->config);
-
-        $email = 'daniel.simplybridel@gmail.com';
-
-        $cardData = [
-            'card' => [
-                'number'    => '4242424242424242',
-                'exp_month' => 10,
-                'cvc'       => 314,
-                'exp_year'  => 2020,
-            ],
-        ];
         \Stripe\Stripe::setApiKey($config->secretKey);
 
-        $customer = \Stripe\Customer::create([
-            'email' => $email,
-        ]);
-        $cId = $customer->id;
-        $token = \Stripe\Token::create($cardData);
-        $tId = $token->id;
-        $card = $customer->sources->create([
-            'source' => $tId
-        ]);
+//        $email = 'daniel.simplybridel@gmail.com';
+//        $cardData = [
+//            'card' => [
+//                'number'    => '4242424242424242',
+//                'exp_month' => 10,
+//                'cvc'       => 314,
+//                'exp_year'  => 2020,
+//            ],
+//        ];
 
-        $token = \Stripe\Token::create($cardData);
-        $tId = $token->id;
-        $r = \Stripe\Charge::create([
-            'amount' => 1099,
-            'customer' => 'cus_4EBumIjyaKooft',
-            'source' => $tId,
-            'description' => "charge test from daniel 2017-12-25 002"
-        ]);
-        dd($customer, $token, $card, $r);
+//        $customer = \Stripe\Customer::create([
+//            'email' => $email,
+//        ]);
+//        $cId = $customer->id;
+//        $token = \Stripe\Token::create($cardData);
+//        $tId = $token->id;
+//        $card = $customer->sources->create([
+//            'source' => $tId
+//        ]);
+//
+//        $token = \Stripe\Token::create($cardData);
+//        $tId = $token->id;
+//        $r = \Stripe\Charge::create([
+//            'amount' => 1099,
+//            'customer' => 'cus_4EBumIjyaKooft',
+//            'source' => $tId,
+//            'description' => "charge test from daniel 2017-12-25 002"
+//        ]);
+
+//        $r = \Stripe\Charge::create([
+//            'amount' => 1499,
+//            'currency' => 'USD',
+//            'customer' => 'cus_C0uUA1VIGLrJ2Z',
+//            'source' => 'card_1Bd8L5Ip0BEkz1uEf9aQhSFc',
+//            'description' => "charge test from daniel 2017-12-26 001"
+//        ]);
+//        dd($r);
 
         // \App\Services\PaymentService::create('test');
 

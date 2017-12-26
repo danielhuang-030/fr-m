@@ -4,13 +4,15 @@ namespace App\Services\Gateways;
 
 abstract class Gateway
 {
-    protected $config;
+    protected $gateway;
     protected $user;
     protected $inputData;
+    protected $paymentProfile;
+    protected $errorMessage;
 
-    public function __construct($config)
+    public function __construct(\App\Models\Gateway $gateway)
     {
-        $this->config = $config;
+        $this->gateway = $gateway;
     }
 
     public function pay(array $inputData = [], \App\Models\User $user)
@@ -18,19 +20,29 @@ abstract class Gateway
         $this->user = $user;
         $this->inputData = $inputData;
 
-        $this->createCustomer();
-        $this->createCard();
-        dd($this->user);
-        $this->charge();
-        $this->createPaymentProfile();
-        $this->createTransaction();
+        try {
+            $this->init();
+            $this->createCustomer();
+            $this->createCard();
+            $this->charge();
+            $this->createTransaction();
+        } catch (\Exception $e) {
+            $this->errorMessage = $e->getMessage();
+            return false;
+        }
 
         return;
     }
 
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    abstract protected function init();
     abstract protected function createCustomer();
     abstract protected function createCard();
     abstract protected function charge();
-    abstract protected function createPaymentProfile();
+
     abstract protected function createTransaction();
 }
