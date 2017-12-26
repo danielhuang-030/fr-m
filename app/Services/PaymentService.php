@@ -6,13 +6,6 @@ use Cart;
 
 class PaymentService
 {
-    /**
-     * construct
-     */
-    public function __construct()
-    {
-    }
-
     public function pay(array $inputData = [], string $gatewayName = 'stripe')
     {
         // get user

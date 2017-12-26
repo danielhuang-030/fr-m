@@ -67,7 +67,9 @@ Route::group([
         Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
     });
 
+    // payment
     Route::get('/payment', 'PaymentsController@index')->name('payment');
+    Route::post('/webhook/{gateway_id}', 'PaymentsController@webhook')->name('webhook');
 });
 
 
