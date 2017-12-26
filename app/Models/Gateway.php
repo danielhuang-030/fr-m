@@ -12,4 +12,9 @@ class Gateway extends Model
         return $this->hasOne(User::class);
     }
 
+    public function webhookEvents()
+    {
+        return $this->hasMany(WebhookEvents::class);
+    }
+
 }
