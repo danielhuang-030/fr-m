@@ -93,16 +93,46 @@ class Stripe extends Gateway
             throw new \Exception('No PaymentProfile data');
         }
 
-        $charge = \Stripe\Charge::create([
+        $this->transaction = \Stripe\Charge::create([
             'amount' => $this->inputData['amount'] * 100,
             'currency' => $this->inputData['currency'],
             'customer' => $this->user->external_id,
             'source' => $this->paymentProfile->external_id,
-            'description' => "charge test from daniel 2017-12-26 002"
+            'description' => $this->inputData['description']
         ]);
     }
 
-    protected function createTransaction()
-    {}
+    protected function createTransaction(\Exception $e = null)
+    {
+        $status = 'charged';
+        $type = 'charge';
+
+        $transaction = new \App\Models\Transaction();
+        if ($e instanceof \Exception) {
+            $transaction->fail_reason = $e->getMessage();
+            /*
+            $now = Carbon::createFromFormat('U', 1514258232)->setTimezone(config('app.timezone'));
+        dd(1514258232, $date->format('U'), config('app.timezone'));*/
+            $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            $transaction->failed_at = $now;
+            $transaction->traded_at = $now;
+            $status = 'failed';
+        } else {
+            $chargeTime = \Carbon\Carbon::createFromFormat('U', $this->transaction->created)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+            $transaction->charged_at = $chargeTime; // $this->transaction->created;
+            $transaction->traded_at = $chargeTime;
+        }
+
+        $transaction->user_id = $this->user->id ?? null;
+        $transaction->amount_in_cents = $this->inputData['amount'] ?? null;
+        $transaction->currency = strtoupper($this->inputData['currency']) ?? null;
+        $transaction->status = $status;
+        $transaction->type = $type;
+        $transaction->card_number = $this->inputData['card']['number'] ?? null;
+        $transaction->gateway_id = $this->gateway->id ?? null;
+        $transaction->transaction_id = $this->transaction->id ?? null;
+        $transaction->save();
+
+    }
 }
 

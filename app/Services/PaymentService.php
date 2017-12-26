@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-use Cart;
-
 class PaymentService
 {
-    public function pay(array $inputData = [], string $gatewayName = 'stripe')
+    public function pay(array $inputData = [], string $gatewayName = '')
     {
-        // get user
+        // get user with gateway
         if (empty($inputData['user_id'])) {
             throw new Exception('Can not get user');
         }
@@ -19,35 +17,41 @@ class PaymentService
         }
 
         // get payment gateway
-        $gateway = $this->gatewayFactory($gatewayName, $user);
+        $gateway = $this->gatewayFactory($user, $gatewayName);
         if (null === $gateway) {
             throw new Exception('Can not get payment gateway');
         }
 
-        if (!$gateway->pay($inputData, $user)) {
-            dd($gateway->getErrorMessage());
-        }
-        return true;
-        // return $gateway->pay($inputData, $user);
+//        if (!$gateway->pay($inputData, $user)) {
+//            dd($gateway->getErrorMessage());
+//        }
+//        return true;
+        return $gateway->pay($inputData, $user);
     }
 
     /**
      * gateway factory
      *
+     * @param \App\Models\User $user
      * @param string $gatewayName
      * @return \App\Services\Gateways\Gateway
      */
-    protected function gatewayFactory(string $gatewayName = 'stripe', $user)
+    protected function gatewayFactory(\App\Models\User $user, string $gatewayName = '')
     {
         if (!empty($user->gateway)) {
             // get gateway by user
             $gateway = $user->gateway;
         } else {
-            // get gateway by name
-            $model = new \App\Models\Gateway();
-            $gateway = $model->where('name', $gatewayName)->first();
-            if (null === $gateway) {
-                return null;
+            if (!empty($gatewayName)) {
+                // get gateway by name
+                $model = new \App\Models\Gateway();
+                $gateway = $model->where('name', $gatewayName)->first();
+                if (null === $gateway) {
+                    return null;
+                }
+            } else {
+                // get gateway name by weight
+
             }
 
             // set user gateway

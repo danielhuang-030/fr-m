@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Home;
 
-use File;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -25,15 +24,16 @@ class PaymentsController extends BaseController
     {
         $gatewayName = 'stripe';
         $r = $this->paymentService->pay([
-            'amount' => 15.49,
+            'amount' => 7.99,
             'currency' => 'USD',
             'user_id' => 22,
             'card' => [
-                'number'    => '4242424242424242',
+                'number'    => '4000000000000101',
                 'exp_month' => 10,
                 'cvc'       => 314,
                 'exp_year'  => 2020,
             ],
+            'description' => 'If a CVC number is provided, the cvc_check fails. If your account is blocking payments that fail CVC code validation, the charge is declined.',
         ], $gatewayName);
         dd($r);
     }
@@ -47,7 +47,7 @@ class PaymentsController extends BaseController
             return abort(404);
         }
 
-        $model = new \App\Models\WebhookEvents();
+        $model = new \App\Models\WebhookEvent();
         $model->name = $request->json('type');
         $model->external_id = $request->json('id');
         $model->gateway_id = $gateway->id;
