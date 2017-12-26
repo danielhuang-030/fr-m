@@ -9,6 +9,7 @@ abstract class Gateway
     protected $inputData;
     protected $paymentProfile;
     protected $errorMessage;
+    protected $transaction;
 
     public function __construct(\App\Models\Gateway $gateway)
     {
@@ -27,11 +28,12 @@ abstract class Gateway
             $this->charge();
             $this->createTransaction();
         } catch (\Exception $e) {
+            $this->createTransaction($e);
             $this->errorMessage = $e->getMessage();
             return false;
         }
 
-        return;
+        return true;
     }
 
     public function getErrorMessage()
@@ -43,6 +45,5 @@ abstract class Gateway
     abstract protected function createCustomer();
     abstract protected function createCard();
     abstract protected function charge();
-
-    abstract protected function createTransaction();
+    abstract protected function createTransaction(\Exception $e = null);
 }

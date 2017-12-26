@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-class WebhookEvents extends Model
+class Transaction extends Model
 {
-    protected $table = 'webhook_events';
+    protected $table = 'transactions';
     protected $guarded = ['id'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 
     public function gateway()
     {

@@ -17,4 +17,9 @@ class Gateway extends Model
         return $this->hasMany(WebhookEvents::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
 }
