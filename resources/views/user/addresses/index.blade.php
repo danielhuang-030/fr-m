@@ -31,12 +31,12 @@
                         </p>
                         <div class="new-mu_l2a new-p-re">
                             <p class="new-mu_l2cw">
-                                <span class="title">address</span>
+                                <span class="title">address</span><br />
                                 <span class="zipcode">{{ $address->zipcode }}</span>
-                                <span class="state">{{ $addressPersenter->getStateName($address) }}</span>
-                                <span class="city">{{ $address->city }}</span>
+                                <span class="street">{{ $address->addr2 }}</span>, <span class="street">{{ $address->addr1 }}</span>
                                 <br>
-                                <span class="street">{{ $address->addr }}</span></p>
+                                <span class="city">{{ $address->city }}</span>, <span class="state">{{ $addressPersenter->getStateName($address) }}</span>
+                            </p>
                         </div>
                         <div class="new-addr-btn">
                             <a href="{{ url("/user/addresses/{$address->id}/edit") }}"><i class="am-icon-edit"></i>Edit</a>
@@ -52,7 +52,7 @@
 			</ul>
 			<div class="clear"></div>
 
-            @if (0 === $addresses->count())
+            @if ($addresses->isEmpty())
 			<a class="new-abtn-type" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0}">Add</a>
 			<!--例子-->
 
@@ -130,10 +130,21 @@
                                     </div>
                                 </div>
                                 <div class="am-form-group">
-                                    <label for="addr" class="am-form-label">Addr</label>
+                                    <label for="addr1" class="am-form-label">Address 1</label>
                                     <div class="am-form-content">
-                                        <textarea id="addr" name="addr" rows="3" id="user-intro" placeholder="Addr">{{ old("addr") }}</textarea>
+                                         <input id="addr1" name="addr1" value="{{ old('addr1') }}" placeholder="Address 1" type="text">
+                                    </div>
+                                    <?php /*
+                                    <div class="am-form-content">
+                                        <textarea id="addr" name="addr" rows="3" id="user-intro" placeholder="Addr">{{ $address->addr1 }}</textarea>
                                         <small></small>
+                                    </div>
+                                    */ ?>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="addr2" class="am-form-label">Address 2</label>
+                                    <div class="am-form-content">
+                                         <input id="addr2" name="addr2" value="{{ old('addr2') }}" placeholder="Address 2" type="text">
                                     </div>
                                 </div>
 

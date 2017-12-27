@@ -52,8 +52,18 @@ class CheckoutsController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+        $address = null;
+        if (null !== $user) {
+            $addresses = $user->addresses;
+            $addresses instanceof \Illuminate\Support\Collection;
+            if (!$addresses->isEmpty()) {
+                $address = $addresses->first();
+            }
+        }
         $states = (new \App\Models\State())->get();
-        return view('home.checkouts.index', compact('states'));
+
+        return view('home.checkouts.index', compact('user', 'address', 'states'));
     }
 
     public function cart()

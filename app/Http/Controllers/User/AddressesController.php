@@ -18,7 +18,7 @@ class AddressesController extends Controller
 
     public function index()
     {
-        $addresses = $this->guard()->user()->addresses;
+        $addresses = auth()->user()->addresses;
 
         $states = DB::table('states')->get();
         // $cities = DB::table('cities')->where('state_id', $states->first()->id)->get();
@@ -30,7 +30,7 @@ class AddressesController extends Controller
     public function store(AddressRequest $request)
     {
         $addressesData = $this->getFormatRequest($request);
-        $this->guard()->user()->addresses()->create($addressesData);
+        auth()->user()->addresses()->create($addressesData);
 
         return back()->with('status', 'Added successfully');
     }
@@ -44,7 +44,7 @@ class AddressesController extends Controller
 
     public function edit(Address $address)
     {
-        $addresses = $this->guard()->user()->addresses;
+        $addresses = auth()->user()->addresses;
 
         $states = DB::table('states')->get();
 
@@ -104,17 +104,12 @@ class AddressesController extends Controller
 
     protected function owns($userID)
     {
-        return $this->guard()->user()->id == $userID;
-    }
-
-    protected function guard()
-    {
-        return Auth::guard();
+        return auth()->user()->id == $userID;
     }
 
     protected function getFormatRequest($request)
     {
-        return $request->only(['first_name', 'last_name', 'phone', 'country', 'zipcode', 'state_id', 'city', 'addr',]);
+        return $request->only(['first_name', 'last_name', 'phone', 'country', 'zipcode', 'state_id', 'city', 'addr1', 'addr2']);
     }
 
 

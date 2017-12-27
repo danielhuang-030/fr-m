@@ -22,19 +22,20 @@ class PaymentsController extends BaseController
 
     public function index()
     {
-        // $this->paymentService->testGatewayWeight(1000);
+        dd('charge');
 
+        // $this->paymentService->testGatewayWeight(1000);
         $r = $this->paymentService->pay([
-            'amount' => 7.99,
+            'amount' => 1.99,
             'currency' => 'USD',
             'user_id' => 22,
             'card' => [
-                'number'    => '4242424242424241',
+                'number'    => '4242424242424242',
                 'exp_month' => 10,
                 'cvc'       => 314,
                 'exp_year'  => 2020,
             ],
-            'description' => 'Charge is declined with an incorrect_number code as the card number fails the Luhn check.',
+            'description' => 'Charge daniel test 12/27 001.',
         ]);
         dd($r);
     }
@@ -59,4 +60,19 @@ class PaymentsController extends BaseController
 
         // File::append(sprintf('%s/%s', storage_path('logs'), 'webhook.log'), var_export($request->json(), true) . PHP_EOL);
     }
+
+    public function test()
+    {
+        auth()->loginUsingId(22, true);
+        // \Auth::setUser(\Auth::user());
+        // dd(auth()->user(), auth()->check());
+        session()->put('login_test', 22);
+        return;
+    }
+
+    public function check()
+    {
+        dd(auth()->user());
+    }
+
 }
