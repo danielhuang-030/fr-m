@@ -51,7 +51,10 @@ class PaymentService
                 }
             } else {
                 // get gateway name by weight
-
+                $gateway = $this->getGatewayByWeight();
+                if (null === $gateway) {
+                    return null;
+                }
             }
 
             // set user gateway
@@ -62,6 +65,40 @@ class PaymentService
         // get payment gateway
         $className = sprintf('\App\Services\Gateways\%s', $gateway->factory);
         return new $className($gateway);
+    }
+
+    protected function getGatewayByWeight()
+    {
+        $model = new \App\Models\Gateway();
+        $gateways = $model->all();
+        if (empty($gateways)) {
+            return null;
+        }
+
+        $gatewayPair = [];
+        $sum = 0;
+        foreach ($gateways as $gateway) {
+            $sum += $gateway->weight;
+            $gatewayPair[$gateway->id] = $gateway;
+        }
+
+        $rand = rand(1, $sum);
+        foreach ($gatewayPair as $id => $gateway) {
+            if (($sum -= $gateway->weight) < $rand) {
+                return $gateway;
+            }
+        }
+        return null;
+    }
+
+    public function testGatewayWeight($count = 100)
+    {
+        $result = array();
+        for ($i = 0; $i < $count; $i++) {
+            $gateway = $this->getGatewayByWeight();
+            @$result[$gateway->name]++;
+        }
+        dd($result);
     }
 
 }

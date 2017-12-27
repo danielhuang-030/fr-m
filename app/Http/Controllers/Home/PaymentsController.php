@@ -22,19 +22,20 @@ class PaymentsController extends BaseController
 
     public function index()
     {
-        $gatewayName = 'stripe';
+        // $this->paymentService->testGatewayWeight(1000);
+
         $r = $this->paymentService->pay([
             'amount' => 7.99,
             'currency' => 'USD',
             'user_id' => 22,
             'card' => [
-                'number'    => '4000000000000101',
+                'number'    => '4242424242424241',
                 'exp_month' => 10,
                 'cvc'       => 314,
                 'exp_year'  => 2020,
             ],
-            'description' => 'If a CVC number is provided, the cvc_check fails. If your account is blocking payments that fail CVC code validation, the charge is declined.',
-        ], $gatewayName);
+            'description' => 'Charge is declined with an incorrect_number code as the card number fails the Luhn check.',
+        ]);
         dd($r);
     }
 

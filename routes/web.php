@@ -68,6 +68,7 @@ Route::group([
     });
 
     // payment
+    // Route::middleware(['user.auth'])->get('/payment', 'PaymentsController@index')->name('payment');
     Route::get('/payment', 'PaymentsController@index')->name('payment');
     Route::post('/webhook/{gateway_id}', 'PaymentsController@webhook')->name('webhook');
 });
