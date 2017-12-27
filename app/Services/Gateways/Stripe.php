@@ -104,15 +104,12 @@ class Stripe extends Gateway
 
     protected function createTransaction(\Exception $e = null)
     {
-        $status = 'charged';
+        $status = 'succeed';
         $type = 'charge';
 
         $transaction = new \App\Models\Transaction();
         if ($e instanceof \Exception) {
             $transaction->fail_reason = $e->getMessage();
-            /*
-            $now = Carbon::createFromFormat('U', 1514258232)->setTimezone(config('app.timezone'));
-        dd(1514258232, $date->format('U'), config('app.timezone'));*/
             $now = \Carbon\Carbon::now()->format('Y-m-d H:i:s');
             $transaction->failed_at = $now;
             $transaction->traded_at = $now;
@@ -124,13 +121,14 @@ class Stripe extends Gateway
         }
 
         $transaction->user_id = $this->user->id ?? null;
-        $transaction->amount_in_cents = $this->inputData['amount'] ?? null;
+        $transaction->order_id = $this->inputData['order_id'] ?? null;
+        $transaction->amount_in_cents = $this->inputData['amount'] * 100 ?? null;
         $transaction->currency = strtoupper($this->inputData['currency']) ?? null;
         $transaction->status = $status;
         $transaction->type = $type;
-        $transaction->card_number = $this->inputData['card']['number'] ?? null;
+        $transaction->payment_profile_id = $this->paymentProfile->id ?? null;
         $transaction->gateway_id = $this->gateway->id ?? null;
-        $transaction->transaction_id = $this->transaction->id ?? null;
+        $transaction->gateway_transaction_id = $this->transaction->id ?? null;
         $transaction->save();
 
     }
