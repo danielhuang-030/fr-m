@@ -39,9 +39,11 @@
                         <a class="i-load-more-item-shadow" href="{{ url('/user/orders') }}">Orders</a>
                     </div>
                     <ul>
-                        <li><a href="{{ url('/home/cars') }}"><i><img src="{{ asset('assets/user/images/send.png') }}"/></i><span>Cart<em class="m-num">{{ $user->cars->count() }}</em></span></a></li>
+                        <li><a href="{{ url('/cart') }}"><i><img src="{{ asset('assets/user/images/send.png') }}"/></i><span>Cart<em class="m-num">{{ \Cart::getContent()->count() }}</em></span></a></li>
 
+                        <?php /*
                         <li><a href="{{ url('/home/orders') }}"><i><img src="{{ asset('assets/user/images/refund.png') }}"/></i><span>Order<em class="m-num">{{ $user->orders->count() }}</em></span></a></li>
+                        */ ?>
                     </ul>
                 </div>
 
@@ -53,7 +55,7 @@
                     </div>
                     <div class="s-content">
                         <ul class="lg-list">
-
+<?php /*
                             @foreach ($user->orders as $order)
                                 <li class="lg-item">
                                     <div class="lg-info">
@@ -67,7 +69,7 @@
                                 </li>
                                 <div class="clear"></div>
                             @endforeach
-
+*/ ?>
                         </ul>
 
                     </div>
@@ -238,23 +240,6 @@
                         <span>星期 {{ date('N') }}</span>
                         <span>{{ date('Y-m') }}</span>
                     </div>
-                </div>
-            </div>
-
-            <!--热卖推荐 -->
-            <div class="new-goods">
-                <div class="s-bar">
-                    <i class="s-icon"></i>热卖推荐
-                </div>
-                <div class="new-goods-info">
-
-                    @inject('productPresenter', 'App\Presenters\ProductPresenter')
-                    <a class="shop-info" href="{{ url("/home/products/{$hotProduct->id}") }}" target="_blank">
-                        <div >
-                            <img src="{{ $productPresenter->getThumbLink($hotProduct->thumb) }}" alt="">
-                        </div>
-                        <span class="one-hot-goods">{{ $hotProduct->price }}</span>
-                    </a>
                 </div>
             </div>
 

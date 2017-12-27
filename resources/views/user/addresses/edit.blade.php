@@ -12,7 +12,7 @@
 		<div class="user-address">
 			<!--标题 -->
 			<div class="am-cf am-padding">
-				<div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">地址管理</strong> / <small>Address&nbsp;list</small></div>
+				<div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">Address&nbsp;list</strong></div>
 			</div>
 			<hr/>
 			<ul class="am-avg-sm-1 am-avg-md-3 am-thumbnails">
@@ -25,12 +25,12 @@
                         </p>
                         <div class="new-mu_l2a new-p-re">
                             <p class="new-mu_l2cw">
-                                <span class="title">address</span>
+                                <span class="title">address</span><br />
                                 <span class="zipcode">{{ $address->zipcode }}</span>
-                                <span class="state">{{ $addressPersenter->getStateName($address) }}</span>
-                                <span class="city">{{ $address->city }}</span>
+                                <span class="street">{{ $address->addr2 }}</span>, <span class="street">{{ $address->addr1 }}</span>
                                 <br>
-                                <span class="street">{{ $address->addr }}</span></p>
+                                <span class="city">{{ $address->city }}</span>, <span class="state">{{ $addressPersenter->getStateName($address) }}</span>
+                            </p>
                         </div>
                         <div class="new-addr-btn">
                             <a href="{{ url("/user/addresses/{$address->id}/edit") }}"><i class="am-icon-edit"></i>Edit</a>
@@ -124,10 +124,21 @@
                                     </div>
                                 </div>
                                 <div class="am-form-group">
-                                    <label for="addr" class="am-form-label">Addr</label>
+                                    <label for="addr1" class="am-form-label">Address 1</label>
                                     <div class="am-form-content">
-                                        <textarea id="addr" name="addr" rows="3" id="user-intro" placeholder="Addr">{{ $address->addr }}</textarea>
+                                         <input id="addr1" name="addr1" value="{{ $address->addr1 }}" placeholder="Address 1" type="text">
+                                    </div>
+                                    <?php /*
+                                    <div class="am-form-content">
+                                        <textarea id="addr" name="addr" rows="3" id="user-intro" placeholder="Addr">{{ $address->addr1 }}</textarea>
                                         <small></small>
+                                    </div>
+                                    */ ?>
+                                </div>
+                                <div class="am-form-group">
+                                    <label for="addr2" class="am-form-label">Address 2</label>
+                                    <div class="am-form-content">
+                                         <input id="addr2" name="addr2" value="{{ $address->addr2 }}" placeholder="Address 2" type="text">
                                     </div>
                                 </div>
                                 <div class="am-form-group">

@@ -13,10 +13,8 @@ class UsersController extends Controller
 {
     public function index()
     {
-        $user = $this->guard()->user();
-        $hotProduct = Product::where('safe_count', 'desc')->first();
-
-        return view('user.homes.index', compact('user', 'hotProduct'));
+        $user = auth()->user();
+        return view('user.homes.index', compact('user'));
     }
 
     public function setting()
@@ -31,7 +29,7 @@ class UsersController extends Controller
             'name' => 'required:unique:users'
         ]);
 
-        $this->guard()->user()->update($request->only(['name', 'avatar']));
+        auth()->user()->update($request->only(['name', 'avatar']));
 
         return back()->with('status', 'Successfully modified');
     }
@@ -44,7 +42,7 @@ class UsersController extends Controller
             'msg' => '服务器出错，请稍后再试',
         ];
 
-        if ($this->guard()->user()->subscribe()->create($request->all())) {
+        if (auth()->user()->subscribe()->create($request->all())) {
             $response = [
                 'code' => 200,
                 'msg' => '订阅成功',
@@ -61,7 +59,7 @@ class UsersController extends Controller
             'msg' => '服务器出错，请稍后再试',
         ];
 
-        if ($this->guard()->user()->subscribe()->delete()) {
+        if (auth()->user()->subscribe()->delete()) {
             $response = [
                 'code' => 200,
                 'msg' => '取消订阅成功',
@@ -134,13 +132,7 @@ class UsersController extends Controller
 
     private function validatePassword($oldPassword)
     {
-        return Hash::check($oldPassword, $this->guard()->user()->password);
+        return Hash::check($oldPassword, auth()->user()->password);
     }
-
-    protected function guard()
-    {
-        return Auth::guard();
-    }
-
 
 }

@@ -71,6 +71,13 @@ Route::group([
     // Route::middleware(['user.auth'])->get('/payment', 'PaymentsController@index')->name('payment');
     Route::get('/payment', 'PaymentsController@index')->name('payment');
     Route::post('/webhook/{gateway_id}', 'PaymentsController@webhook')->name('webhook');
+
+    // test
+    Route::prefix('payment')->group(function() {
+        Route::get('/test', 'PaymentsController@test');
+        Route::get('/check', 'PaymentsController@check');
+    });
+
 });
 
 
