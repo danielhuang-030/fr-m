@@ -83,7 +83,7 @@
                                         </h3>
                                         <p class="text-muted mb-20 text-right">
                                             @foreach ($latestProduct->authors as $author)
-                                            <a href="{{ url('author') }}/{{ $author->slug }}">
+                                            <a href="{{ route('author', ['slug' => $author->slug]) }}">
                                                 {{ $author->name }}
                                             </a>&nbsp;
                                             @endforeach
