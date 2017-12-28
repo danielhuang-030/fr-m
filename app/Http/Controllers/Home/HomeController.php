@@ -21,7 +21,7 @@ class HomeController extends Controller
             ->take(3)->get();
 
         $model = new \App\Models\Book();
-        $latestProducts = $model->with(['conditions', 'images'])->latest()->take(9)->get();
+        $latestProducts = $model->with(['conditions', 'images', 'authors'])->latest()->take(9)->get();
 
         return view('home.homes.index', compact('categories', 'hotProducts', 'latestProducts'));
     }
