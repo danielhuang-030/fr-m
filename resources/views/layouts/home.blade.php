@@ -25,9 +25,9 @@
     <!-- ––––––––––––––––––––––––––––––––––––––––– -->
     <!-- SEO METAS                                 -->
     <!-- ––––––––––––––––––––––––––––––––––––––––– -->
-    <meta name="description" content="星期一网上商城,专业的综合网上购物商城,销售家电、数码通讯、电脑、家居百货、服装服饰、母婴、图书、食品等品牌优质商品.便捷、诚信的服务，为您提供愉悦的网上购物体验!">
+    <meta name="description" content="">
     <meta name="black friday, coupon, coupon codes, coupon theme, coupons, deal news, deals, discounts, ecommerce, friday deals, groupon, promo codes, responsive, shop, store coupons">
-    <meta name="Keywords" content="网上购物,网上商城,网上买,购物网站,团购,安全购物,电子商务,打折" />
+    <meta name="Keywords" content="" />
 
     <!-- ––––––––––––––––––––––––––––––––––––––––– -->
     <!-- PAGE FAVICON                              -->
@@ -75,15 +75,15 @@
 <body id="body" class="wide-layout preloader-active">
 <!--[if lt IE 9]>
 <p class="browserupgrade alert-error">
-    你用<strong>过时</strong>浏览器。请<a href="http://browsehappy.com/">升级您的浏览器</a>来提高你的经验。
+    You are using a <strong> obsolete </ strong> browser. Please <a href="http://browsehappy.com/"> upgrade your browser </a> to enhance your experience.
 </p>
 <![endif]-->
 
 <noscript>
     <div class="noscript alert-error">
-        对于本网站有必要启用JavaScript的全部功能。这是
-        <a href="http://www.enable-javascript.com/" target="_blank">
-            说明如何启用JavaScript在Web浏览器中</a>.
+        It is necessary for this site to enable full functionality of JavaScript. this is
+         <a href="http://www.enable-javascript.com/" target="_blank">
+             Explains how to enable JavaScript in your web browser </a>.
     </div>
 </noscript>
 
