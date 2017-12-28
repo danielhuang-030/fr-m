@@ -7,21 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $table = 'orders';
-    protected $fillable = ['uuid', 'total', 'status', 'address_id', 'user_id'];
-
+    protected $guarded = ['id'];
 
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class);
     }
 
-    public function address()
+    public function orderFees()
     {
-        return $this->belongsTo(Address::class);
+        return $this->hasMany(OrderFees::class);
+    }
+
+    public function orderStatuses()
+    {
+        return $this->hasMany(orderStatuses::class);
+    }
+
+    public function OrderTracks()
+    {
+        return $this->hasMany(OrderTracks::class);
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

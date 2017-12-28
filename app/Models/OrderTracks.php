@@ -4,19 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderDetail extends Model
+class OrderTracks extends Model
 {
-    protected $table = 'order_statuses';
+    protected $table = 'order_tracks';
     protected $guarded = ['id'];
 
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
-
-    public function book()
-    {
-        return $this->belongsTo(Book::class);
-    }
-
 }

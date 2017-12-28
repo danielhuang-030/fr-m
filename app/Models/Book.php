@@ -40,10 +40,14 @@ class Book extends Model
         return $this->hasMany(BookImage::class)->orderBy('sort');
     }
 
-
     public function conditions()
     {
         return $this->hasMany(BookCondition::class);
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
     }
 
 }
