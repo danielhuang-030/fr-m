@@ -41,7 +41,7 @@ Route::group([
     });
 
     // author
-    Route::get('/author/{slug}', 'BooksController@author');
+    Route::get('/author/{slug}', 'BooksController@author')->name('author');
 
     // category
     Route::get('/categories/tree', 'BooksController@tree');
@@ -65,6 +65,8 @@ Route::group([
 
         Route::get('/cart', 'CheckoutsController@cart')->name('checkout.cart');
         Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
+
+        Route::post('/order', 'CheckoutsController@order')->name('checkout.order');
     });
 
     // payment
