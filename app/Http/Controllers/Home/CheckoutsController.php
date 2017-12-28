@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
+use App\Services\CheckoutService;
 
 class CheckoutsController extends Controller
 {
@@ -20,24 +21,27 @@ class CheckoutsController extends Controller
      *
      * @var CartService
      */
-    protected $service;
+    protected $cartService;
+
+    protected $checkoutService;
 
     /**
      * construct
      *
-     * @param AccountService $accountService
+     * @param CartService $cartService
      */
-    public function __construct(CartService $service)
+    public function __construct(CartService $cartService, CheckoutService $checkoutService)
     {
-        $this->service = $service;
+        $this->cartService = $cartService;
+        $this->checkoutService = $checkoutService;
 
         // check cart is empty, add fixed fee
         $this->middleware(function($request, $next) {
-            if ($this->service->isEmpty()) {
+            if ($this->cartService->isEmpty()) {
                 return redirect('/');
             }
-            $this->service->clearConditions();
-            $this->service->addConditionCarbonBalance();
+            $this->cartService->clearConditions();
+            $this->cartService->addConditionCarbonBalance();
 
             return $next($request);
         }, [
@@ -68,25 +72,32 @@ class CheckoutsController extends Controller
 
     public function cart()
     {
-        $items = $this->service->getItems();
-        $conditions = $this->service->getConditions();
-        $subTotal = $this->service->getSubTotal();
-        $total = $this->service->getTotal();
+        $items = $this->cartService->getItems();
+        $conditions = $this->cartService->getConditions();
+        $subTotal = $this->cartService->getSubTotal();
+        $total = $this->cartService->getTotal();
         return view('home.checkouts.cart', compact('items', 'conditions', 'subTotal', 'total'));
     }
 
     public function tax(Request $request)
     {
         $stateId = (int) $request->input('id', 0);
-        $this->service->addConditionTax($stateId);
+        $this->cartService->addConditionTax($stateId);
 
         return response()->json([
             'code' => 200,
         ]);
     }
 
-    private function guard()
+    public function order(Request $request)
     {
-        return Auth::guard();
+        $email = 'danielsimplybridel@gmail.com';
+        // $email = 'daniel.huang@simplybridal.com';
+        $r = $this->checkoutService->createUserByEmail($email);
+        dd($r);
+        return;
+
+        $this->checkoutService->order($request->all(), auth()->id());
     }
+
 }
