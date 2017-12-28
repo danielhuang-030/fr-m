@@ -171,15 +171,17 @@ class CartService
      */
     public function addConditionTax(int $stateId)
     {
+        // reset
         Cart::removeConditionsByType('tax');
 
+        // get state data with tax
         $model = new \App\Models\State();
         $state = $model->with(['tax'])->find($stateId);
-        if (null === $state->tax) {
+        if (null === $state || null === $state->tax) {
             return;
         }
 
-        // tax
+        // add tax condition
         $condition = new \Darryldecode\Cart\CartCondition([
             'name' => sprintf('%s TAX', $state->name),
             'type' => 'tax',
