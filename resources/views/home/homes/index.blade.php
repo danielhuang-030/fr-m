@@ -81,8 +81,13 @@
                                                 {{ $latestProduct->title }}
                                             </a>
                                         </h3>
-                                        <p class="text-muted mb-20">
-                                            {!! mb_substr($latestProduct->description, 0, 40) !!}...
+                                        <p class="text-muted mb-20 text-right">
+                                            @foreach ($latestProduct->authors as $author)
+                                            <a href="{{ url('author') }}/{{ $author->slug }}">
+                                                {{ $author->name }}
+                                            </a>&nbsp;
+                                            @endforeach
+                                            <?php /*{!! mb_substr($latestProduct->description, 0, 40) !!}...*/ ?>
                                         </p>
                                     </div>
                                     <div class="deal-price pos-r mb-15">
