@@ -76,7 +76,7 @@
                                 </tbody>
                             </table>
                             </form>
-                            <h3 class="h-title mb-30 t-uppercase text-right"><a href="{{ url('checkout') }}">CHECKOUT</a></h3>
+                            <h3 class="h-title mb-30 t-uppercase text-right"><a href="{{ url('checkout') }}">PROCEED TO CHECKOUT</a></h3>
                             @endif
                         </div>
                     </div>
@@ -94,8 +94,11 @@
 $(function() {
   $(".delete-item").on("click", function() {
     if (confirm("Are you sure you want to delete this book?")) {
-        $.post("/fr-m/cart/" + $(this).attr("data-id"), {
-          _method: "DELETE"
+        $.ajax({
+          url: "/fr-m/cart/" + $(this).attr("data-id"),
+          type: "DELETE",
+          data: $(this).parents("form").serialize(),
+          dataType: "json"
         }).done(function(json) {
           // console.log(json);
           location.reload();
@@ -148,6 +151,7 @@ $(function() {
     $.ajax({
       url: "/fr-m/cart/clear",
       type: "DELETE",
+      data: $(this).parents("form").serialize(),
       dataType: "json"
     }).done(function(json) {
       alert(json.message);
