@@ -4,14 +4,14 @@ namespace App\Services;
 
 class PaymentService
 {
-    public function pay(array $inputData = [], string $gatewayName = '')
+    public function pay(array $data = [], string $gatewayName = '')
     {
         // get user with gateway
-        if (empty($inputData['user_id'])) {
+        if (empty($data['user_id'])) {
             throw new Exception('Can not get user');
         }
         $model = new \App\Models\User();
-        $user = $model->with('gateway')->find($inputData['user_id']);
+        $user = $model->with('gateway')->find($data['user_id']);
         if (null === $user) {
             throw new Exception('Can not get user');
         }
@@ -22,11 +22,13 @@ class PaymentService
             throw new Exception('Can not get payment gateway');
         }
 
-//        if (!$gateway->pay($inputData, $user)) {
-//            dd($gateway->getErrorMessage());
-//        }
-//        return true;
-        return $gateway->pay($inputData, $user);
+        try {
+            $result = $gateway->pay($data, $user);
+        } catch (\Exception $e) {
+            // $result = false;
+            throw $e;
+        }
+        return $result;
     }
 
     /**
