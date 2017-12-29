@@ -13,7 +13,6 @@ class Category extends Model
     }
 
     protected $table = 'categories';
-    protected $guarded = ['id'];
 
     public function replicate(array $except = null)
     {

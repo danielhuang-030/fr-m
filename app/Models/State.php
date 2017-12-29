@@ -5,7 +5,6 @@ namespace App\Models;
 class State extends Model
 {
     protected $table = 'states';
-    protected $guarded = ['id'];
 
     public function tax()
     {
