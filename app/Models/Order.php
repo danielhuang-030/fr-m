@@ -16,17 +16,17 @@ class Order extends Model
 
     public function orderFees()
     {
-        return $this->hasMany(OrderFees::class);
+        return $this->hasMany(OrderFee::class);
     }
 
     public function orderStatuses()
     {
-        return $this->hasMany(orderStatuses::class);
+        return $this->hasMany(orderStatus::class);
     }
 
     public function OrderTracks()
     {
-        return $this->hasMany(OrderTracks::class);
+        return $this->hasMany(OrderTrack::class);
     }
 
     public function user()
