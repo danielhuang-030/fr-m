@@ -90,22 +90,21 @@ class CheckoutsController extends Controller
         $stateId = (int) $request->input('id', 0);
         $this->cartService->addConditionTax($stateId);
 
-        return response()->json([
-            'code' => 200,
-        ]);
+        return response()->json($this->response);
     }
 
     public function order(Request $request)
     {
-        /*
-        $email = 'danielsimplybridel@gmail.com';
-        // $email = 'daniel.huang@simplybridal.com';
-        $r = $this->checkoutService->createUserByEmail($email);
-        dd($r);
-        return;*/
-
-        $r = $this->checkoutService->order($request->all(), auth()->id());
-        dd($r);
+        $orderId = $this->checkoutService->order($request->all(), auth()->id());
+        $errorMessage = $this->checkoutService->getErrorMessage();
+        if (0 === $orderId || !empty($errorMessage)) {
+            $this->response['code'] = 403;
+            $this->response['message'] = $errorMessage;
+            $this->response['data'] = $orderId;
+            return response()->json($this->response);
+        }
+        $this->response['data'] = $orderId;
+        return response()->json($this->response);
     }
 
 }
