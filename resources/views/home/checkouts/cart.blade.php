@@ -30,10 +30,10 @@
     @endforeach
     @foreach ($conditions as $condition)
     <tr class="panel alert">
-        <td>{{ $condition->getName() }}</td>
-        <td>{{ $condition->getValue() }}</td>
-        <td>1</td>
-        <td>@if ('tax' === $condition->getType()) {{ $condition->getCalculatedValue($subTotal) }} @else {{ $condition->getValue() }} @endif</td>
+        <td>{{ $condition->getAttributes()['name'] }}</td>
+        <td>{{ $condition->getCalculatedValue($subTotal) }}</td>
+        <td>-</td>
+        <td>{{ \Darryldecode\Cart\Helpers\Helpers::formatValue($condition->getCalculatedValue($subTotal), env('SHOPPING_FORMAT_VALUES', false), ['format_numbers' => env('SHOPPING_FORMAT_VALUES', false), 'decimals' => env('SHOPPING_DECIMALS', 0), 'dec_point' => env('SHOPPING_DEC_POINT', '.'), 'thousands_sep' => env('SHOPPING_THOUSANDS_SEP', ',')]) }}</td>
     </tr>
     @endforeach
     </tbody>
