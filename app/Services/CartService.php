@@ -152,14 +152,14 @@ class CartService
     {
         // reset
         Cart::removeConditionsByType('shipping');
-        
+
         // fixed fee
         $condition = new \Darryldecode\Cart\CartCondition([
             'name' => 'shipping',
             'type' => 'shipping',
             'target' => 'subtotal',
             'value' => '0',
-            'order' => 9000,
+            'order' => 500,
             'attributes' => [
                 'name' => 'Shipping',
                 'description' => 'Shipping',
@@ -182,7 +182,7 @@ class CartService
             'type' => 'carbon_balance',
             'target' => 'subtotal',
             'value' => '+0.05',
-            'order' => 9999,
+            'order' => 900,
             'attributes' => [
                 'name' => 'Carbon Balance',
                 'description' => 'Carbon Balance',
@@ -214,7 +214,7 @@ class CartService
             'type' => 'tax',
             'target' => 'subtotal',
             'value' => sprintf('+%s%%', $state->tax->tax),
-            'order' => 100,
+            'order' => 1000,
             'attributes' => [
                 'name' => sprintf('State Tax(%s)', $state->name),
                 'description' => sprintf('State Tax(%s)', $state->name),
