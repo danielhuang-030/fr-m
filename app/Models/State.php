@@ -12,4 +12,14 @@ class State extends Model
         return $this->hasOne(StateTax::class);
     }
 
+    public function orderShippings()
+    {
+        return $this->hasMany(Order::class, 'shipping_state_id');
+    }
+
+    public function orderBillings()
+    {
+        return $this->hasMany(Order::class, 'billing_state_id');
+    }
+
 }
