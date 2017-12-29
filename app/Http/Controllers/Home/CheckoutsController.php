@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Home;
 
-use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\CartService;
@@ -41,6 +40,7 @@ class CheckoutsController extends Controller
                 return redirect('/');
             }
             $this->cartService->clearConditions();
+            $this->cartService->addConditionShipping();
             $this->cartService->addConditionCarbonBalance();
 
             return $next($request);
@@ -91,13 +91,15 @@ class CheckoutsController extends Controller
 
     public function order(Request $request)
     {
+        /*
         $email = 'danielsimplybridel@gmail.com';
         // $email = 'daniel.huang@simplybridal.com';
         $r = $this->checkoutService->createUserByEmail($email);
         dd($r);
-        return;
+        return;*/
 
-        $this->checkoutService->order($request->all(), auth()->id());
+        $r = $this->checkoutService->order($request->all(), auth()->id());
+        dd($r);
     }
 
 }

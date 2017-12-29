@@ -146,18 +146,45 @@ class CartService
     }
 
     /**
+     * add shipping condition
+     */
+    public function addConditionShipping()
+    {
+        // reset
+        Cart::removeConditionsByType('shipping');
+        
+        // fixed fee
+        $condition = new \Darryldecode\Cart\CartCondition([
+            'name' => 'shipping',
+            'type' => 'shipping',
+            'target' => 'subtotal',
+            'value' => '0',
+            'order' => 9000,
+            'attributes' => [
+                'name' => 'Shipping',
+                'description' => 'Shipping',
+            ],
+        ]);
+        Cart::condition($condition);
+    }
+
+    /**
      * add carbon balance condition
      */
     public function addConditionCarbonBalance()
     {
+        // reset
+        Cart::removeConditionsByType('carbon_balance');
+
         // fixed fee
         $condition = new \Darryldecode\Cart\CartCondition([
-            'name' => 'Carbon Balance',
-            'type' => 'misc',
+            'name' => 'carbon_balance',
+            'type' => 'carbon_balance',
             'target' => 'subtotal',
             'value' => '+0.05',
             'order' => 9999,
             'attributes' => [
+                'name' => 'Carbon Balance',
                 'description' => 'Carbon Balance',
             ],
         ]);
@@ -183,13 +210,14 @@ class CartService
 
         // add tax condition
         $condition = new \Darryldecode\Cart\CartCondition([
-            'name' => sprintf('%s TAX', $state->name),
+            'name' => sprintf('%s_tax', strtolower($state->name)),
             'type' => 'tax',
             'target' => 'subtotal',
             'value' => sprintf('+%s%%', $state->tax->tax),
             'order' => 100,
             'attributes' => [
-                'description' => 'State tax',
+                'name' => sprintf('State Tax(%s)', $state->name),
+                'description' => sprintf('State Tax(%s)', $state->name),
             ],
         ]);
         Cart::condition($condition);
