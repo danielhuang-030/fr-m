@@ -2,6 +2,8 @@
 
 namespace App\Services\Gateways;
 
+use DB;
+
 abstract class Gateway
 {
     protected $gateway;
@@ -26,6 +28,7 @@ abstract class Gateway
             $this->createCard();
             $this->charge();
             $this->createTransaction();
+            $this->updateOrder();
         } catch (\Exception $e) {
             $this->createTransaction($e);
             throw $e;
@@ -55,9 +58,36 @@ abstract class Gateway
         ];
     }
 
+    protected function updateOrder()
+    {
+        $model = new \App\Models\Order();
+        $order = $model->find($this->transaction->order_id);
+
+        // update order
+        DB::beginTransaction();
+        try {
+            // update order status
+            if (!$order->updateStatus('processing')) {
+                throw new \Exception('Order status update failed');
+            }
+
+            // update order detail status
+            foreach ($order->details as $orderDetail) {
+                $orderDetail->status = 'processing';
+                $orderDetail->save();
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        DB::commit();
+    }
+
     abstract protected function init();
     abstract protected function createCustomer();
     abstract protected function createCard();
     abstract protected function charge();
     abstract protected function createTransaction(\Exception $e = null);
+
 }

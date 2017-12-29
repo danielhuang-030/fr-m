@@ -4,6 +4,7 @@
 
 <form action="{{ route('checkout.order') }}" method="POST">
 {{ csrf_field() }}
+<input name="order_id" type="hidden" />
     <main id="mainContent" class="main-content">
         <div class="page-container">
             <div class="container">
@@ -143,7 +144,7 @@ function refreshCart() {
 
 // get tax
 function getTax() {
-  console.log('getTax');
+  // console.log('getTax');
   $.ajax({
     url: "/fr-m/checkout/tax",
     type: "GET",
@@ -225,7 +226,19 @@ $(function() {
 
   // place order
   $("#place-order").on("click", function() {
-    $(this).parents("form").submit();
+    var $form = $(this).parents("form");
+    $.ajax({
+      url: $form.prop("action"),
+      type: $form.prop("method"),
+      data: $form.serialize(),
+      dataType: "json"
+    }).done(function(json) {
+      alert(json.message);
+      $("input[name=order_id]").val(json.data);
+      if (200 == json.code) {
+        location.href = '/fr-m';
+      }
+    });
     return false;
   });
 
