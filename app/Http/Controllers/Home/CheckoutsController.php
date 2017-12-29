@@ -56,6 +56,12 @@ class CheckoutsController extends Controller
      */
     public function index()
     {
+        /*
+        $model = new \App\Models\Order();
+        $order = $model->with(['statuses', 'fees', 'details', 'shippingState', 'billingState'])->find(1);
+        dd($order);*/
+
+
         $user = auth()->user();
         $address = null;
         if (null !== $user) {

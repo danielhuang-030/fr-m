@@ -6,9 +6,8 @@ abstract class Gateway
 {
     protected $gateway;
     protected $user;
-    protected $inputData;
+    protected $paymentData;
     protected $paymentProfile;
-    protected $errorMessage;
     protected $transaction;
 
     public function __construct(\App\Models\Gateway $gateway)
@@ -16,10 +15,10 @@ abstract class Gateway
         $this->gateway = $gateway;
     }
 
-    public function pay(array $inputData = [], \App\Models\User $user)
+    public function pay(array $paymentData = [], \App\Models\User $user = null)
     {
         $this->user = $user;
-        $this->inputData = $inputData;
+        $this->paymentData = $paymentData;
 
         try {
             $this->init();
@@ -29,16 +28,31 @@ abstract class Gateway
             $this->createTransaction();
         } catch (\Exception $e) {
             $this->createTransaction($e);
-            $this->errorMessage = $e->getMessage();
-            return false;
+            throw $e;
+            // return false;
         }
 
-        return true;
+        return $this->transaction->id;
     }
 
     public function getErrorMessage()
     {
         return $this->errorMessage;
+    }
+
+    protected function getCardData()
+    {
+        $cardData = [];
+        if (empty($this->paymentData['card'])) {
+            return $cardData;
+        }
+
+        return [
+            'number' => $this->paymentData['card']['number'],
+            'exp_month' => $this->paymentData['card']['exp_month'],
+            'exp_year' => $this->paymentData['card']['exp_year'],
+            'cvc' => $this->paymentData['card']['cvc'],
+        ];
     }
 
     abstract protected function init();

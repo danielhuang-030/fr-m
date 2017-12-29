@@ -30,11 +30,14 @@ class Stripe extends Gateway
 
     protected function createCard()
     {
-        $customer = \Stripe\Customer::retrieve($this->user->external_id);
-        if (empty($this->inputData['card'])) {
+        // get formatted card data
+        $cardData = $this->getCardData();
+        if (empty($cardData)) {
             throw new \Exception('No credit card data from input');
         }
-        $cardData = $this->inputData['card'];
+
+        // get customer
+        $customer = \Stripe\Customer::retrieve($this->user->external_id);
 
         // check from payment_profiles
         $isExist = false;
@@ -94,11 +97,11 @@ class Stripe extends Gateway
         }
 
         $this->transaction = \Stripe\Charge::create([
-            'amount' => $this->inputData['amount'] * 100,
-            'currency' => $this->inputData['currency'],
+            'amount' => $this->paymentData['amount'] * 100,
+            'currency' => $this->paymentData['currency'],
             'customer' => $this->user->external_id,
             'source' => $this->paymentProfile->external_id,
-            'description' => $this->inputData['description']
+            'description' => $this->paymentData['description']
         ]);
     }
 
@@ -121,9 +124,9 @@ class Stripe extends Gateway
         }
 
         $transaction->user_id = $this->user->id ?? null;
-        $transaction->order_id = $this->inputData['order_id'] ?? null;
-        $transaction->amount_in_cents = $this->inputData['amount'] * 100 ?? null;
-        $transaction->currency = strtoupper($this->inputData['currency']) ?? null;
+        $transaction->order_id = $this->paymentData['order_id'] ?? null;
+        $transaction->amount_in_cents = $this->paymentData['amount'] * 100 ?? null;
+        $transaction->currency = strtoupper($this->paymentData['currency']) ?? null;
         $transaction->status = $status;
         $transaction->type = $type;
         $transaction->payment_profile_id = $this->paymentProfile->id ?? null;
