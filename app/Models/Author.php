@@ -9,7 +9,6 @@ class Author extends Model
     use Sluggable;
 
     protected $table = 'authors';
-    protected $guarded = ['id'];
 
     /**
      * Return the sluggable configuration array for this model.
@@ -27,7 +26,7 @@ class Author extends Model
 
     public function books()
     {
-        return $this->belongsToMany(Book::class, 'book_categories');
+        return $this->belongsToMany(Book::class, 'book_authors');
     }
 
 }

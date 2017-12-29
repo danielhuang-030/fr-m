@@ -31,7 +31,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -45,11 +44,6 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'likes_products');
     }
 
     /**

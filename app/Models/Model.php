@@ -4,7 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
-class Model extends EloquentModel
+abstract class Model extends EloquentModel
 {
-    //
+    /**
+     * guarded
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
 }

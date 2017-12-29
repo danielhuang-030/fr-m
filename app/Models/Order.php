@@ -3,29 +3,27 @@
 namespace App\Models;
 
 use DB;
-use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
     protected $table = 'orders';
-    protected $guarded = ['id'];
 
-    public function orderDetails()
+    public function details()
     {
         return $this->hasMany(OrderDetail::class);
     }
 
-    public function orderFees()
+    public function fees()
     {
         return $this->hasMany(OrderFee::class);
     }
 
-    public function orderStatuses()
+    public function statuses()
     {
-        return $this->hasMany(orderStatus::class);
+        return $this->hasMany(OrderStatus::class);
     }
 
-    public function orderTracks()
+    public function tracks()
     {
         return $this->hasMany(OrderTrack::class);
     }
@@ -45,13 +43,20 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * update status
+     *
+     * @param string $status
+     * @param string $memo
+     * @return boolean
+     */
     public function updateStatus(string $status, string $memo = '')
     {
         DB::beginTransaction();
         try {
             // update order status
-            $order->status = $status;
-            $order->save();
+            $this->status = $status;
+            $this->save();
 
             // update order status
             $orderStatus = new \App\Models\OrderStatus();
