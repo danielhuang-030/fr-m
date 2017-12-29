@@ -18,8 +18,9 @@ class CreateOrderFeesTable extends Migration
             $table->integer('order_id')->index();
             $table->string('type')->index();
             $table->string('name');
-            $table->decimal('value', 10, 2);
+            $table->decimal('total', 10, 2);
             $table->integer('sort');
+            $table->json('meta')->nullable();
             $table->timestamps();
         });
     }

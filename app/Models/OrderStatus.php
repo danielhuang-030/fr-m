@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderTracks extends Model
+class OrderStatus extends Model
 {
-    protected $table = 'order_tracks';
+    protected $table = 'order_statuses';
     protected $guarded = ['id'];
 
     public function order()
