@@ -236,7 +236,7 @@ $(function() {
       alert(json.message);
       $("input[name=order_id]").val(json.data);
       if (200 == json.code) {
-        location.href = '/fr-m';
+        // location.href = '/fr-m';
       }
     });
     return false;

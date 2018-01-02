@@ -96,12 +96,15 @@ class Stripe extends Gateway
             throw new \Exception('No PaymentProfile data');
         }
 
-        $this->transaction = \Stripe\Charge::create([
+        $this->charge = \Stripe\Charge::create([
             'amount' => $this->paymentData['amount'] * 100,
             'currency' => $this->paymentData['currency'],
             'customer' => $this->user->external_id,
             'source' => $this->paymentProfile->external_id,
-            'description' => $this->paymentData['description']
+            'description' => $this->paymentData['description'],
+            'metadata' => [
+                'order_id' => $this->paymentData['order_id'],
+            ],
         ]);
     }
 
@@ -118,8 +121,8 @@ class Stripe extends Gateway
             $transaction->traded_at = $now;
             $status = 'failed';
         } else {
-            $chargeTime = \Carbon\Carbon::createFromFormat('U', $this->transaction->created)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
-            $transaction->charged_at = $chargeTime; // $this->transaction->created;
+            $chargeTime = \Carbon\Carbon::createFromFormat('U', $this->charge->created)->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+            $transaction->charged_at = $chargeTime; // $this->charge->created;
             $transaction->traded_at = $chargeTime;
         }
 
@@ -131,9 +134,10 @@ class Stripe extends Gateway
         $transaction->type = $type;
         $transaction->payment_profile_id = $this->paymentProfile->id ?? null;
         $transaction->gateway_id = $this->gateway->id ?? null;
-        $transaction->gateway_transaction_id = $this->transaction->id ?? null;
+        $transaction->gateway_transaction_id = $this->charge->id ?? null;
         $transaction->save();
 
+        $this->transaction = $transaction;
     }
 }
 
