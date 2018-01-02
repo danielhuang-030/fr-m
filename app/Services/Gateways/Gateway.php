@@ -11,6 +11,7 @@ abstract class Gateway
     protected $paymentData;
     protected $paymentProfile;
     protected $transaction;
+    protected $charge;
 
     public function __construct(\App\Models\Gateway $gateway)
     {

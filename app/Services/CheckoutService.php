@@ -26,18 +26,21 @@ class CheckoutService
 
     public function order(array $inputData = [], int $userId = 0)
     {
-        // dd($inputData, $userId);
         if (empty($inputData)) {
             return 0;
         }
 
         // create user by email
         if (0 === $userId) {
+            $email = (string) $inputData['email'] ?? '';
             $user = $this->createUserByEmail($email);
             if (null === $user) {
                 return 0;
             }
             $userId = $user->id;
+
+            // auto login
+            auth()->loginUsingId($userId);
         }
 
         // create order
