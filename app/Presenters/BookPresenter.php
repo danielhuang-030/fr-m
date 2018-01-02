@@ -26,6 +26,7 @@ class BookPresenter
 
         $images = $book->images;
         if (0 === $images->count()) {
+            $links[] = url(static::DEFAULT_IMAGE);
             return $links;
         }
         foreach ($images as $image) {
