@@ -96,18 +96,18 @@
                         <h3 class="h-title mb-30 t-uppercase">CARD</h3>
                         <fieldset id="wc-stripe-cc-form" class="wc-credit-card-form wc-payment-form">
                             <p class="form-row form-row-wide">
-                            <label for="stripe-card-number">Card Number <span class="required">*</span></label>
-                            <input id="stripe-card-number" class="input-text card-number" name="card[number]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="">
+                            <label for="card-number">Card Number <span class="required">*</span></label>
+                            <input id="card-number" class="input-text card-number" name="card[number]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="Card Number">
                             </p>
 
                             <p class="form-row form-row-first">
-                            <label for="stripe-card-expiry">Expiry (MM/YY) <span class="required">*</span></label>
-                            <input id="stripe-card-expiry" class="input-text card-expiry" name="card[expiry]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="MM / YY">
+                            <label for="card-expiry">Expiry (MM/YY) <span class="required">*</span></label>
+                            <input id="card-expiry" class="input-text card-expiry" name="card[expiry]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" placeholder="MM/YY">
                             </p>
 
                             <p class="form-row form-row-last">
-                            <label for="stripe-card-cvc">Card Code <span class="required">*</span></label>
-                            <input id="stripe-card-cvc" class="input-text card-cvc" name="card[cvc]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" maxlength="4" placeholder="CVC" style="width:100px">
+                            <label for="card-cvc">Card Code <span class="required">*</span></label>
+                            <input id="card-cvc" class="input-text card-cvc" name="card[cvc]" inputmode="numeric" autocorrect="no" autocapitalize="no" spellcheck="no" type="tel" maxlength="4" placeholder="CVC/CVV" style="width:100px">
                             </p>
                             <div class="clear"></div>
                         </fieldset>
@@ -159,7 +159,6 @@ function getTax() {
 };
 
 function validateCardNumber(number) {
-    console.log(number);
   var regex = new RegExp("^[0-9]{16}$");
   if (!regex.test(number)) {
     return false;
@@ -185,9 +184,10 @@ function luhnCheck(val) {
 $(function() {
   // mask
   $(".phone-with-ddd").mask("(00) 0000-0000");
-  $(".card-number").mask("0000 0000 0000 0000");
+  $("input[name*=zipcode]").mask("00000");
+  $(".card-number").mask("0000000000000000");
   $(".card-expiry").mask("00/00");
-  $(".card-cvc").mask("000");
+  $(".card-cvc").mask("0000");
 
   // refresh cart
   refreshCart();
@@ -218,11 +218,11 @@ $(function() {
   });
 
   // check card number
-  $(".card-number").on("blur", function() {
-    if (!validateCardNumber(String($(this).val()).replace(/\s/g, ""))) {
-      console.log("Credit card has a valid format!");
-    }
-  });
+//  $(".card-number").on("blur", function() {
+//    if (!validateCardNumber(String($(this).val()).replace(/\s/g, ""))) {
+//      console.log("Credit card has a valid format!");
+//    }
+//  });
 
   // place order
   $("#place-order").on("click", function() {
