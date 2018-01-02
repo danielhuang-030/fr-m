@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use DB;
+use Mail;
 use App\Services\CartService;
 use App\Services\PaymentService;
+use App\Mail\UserCreateWhenCheckout;
 
 class CheckoutService
 {
@@ -193,8 +195,8 @@ class CheckoutService
         $user->active_token = str_random(60);
         $user->save();
 
-        // todo: send email
-        // email content: active, change password
+        // send email
+        Mail::to($user->email)->send((new UserCreateWhenCheckout($user))->with('password', $password));
 
         return $user;
     }
