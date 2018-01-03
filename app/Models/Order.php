@@ -15,7 +15,7 @@ class Order extends Model
 
     public function fees()
     {
-        return $this->hasMany(OrderFee::class);
+        return $this->hasMany(OrderFee::class)->orderBy('sort');
     }
 
     public function statuses()
