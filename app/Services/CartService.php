@@ -41,6 +41,7 @@ class CartService
                 'price' => $bookCondition->price,
                 'quantity' => $quantity,
                 'attributes' => [
+                    'id' => $book->id,
                     'condition' => $bookCondition->condition,
                     'url' => $bookPresenter->getLink($book),
                     'cover' => $bookPresenter->getCover($book),
