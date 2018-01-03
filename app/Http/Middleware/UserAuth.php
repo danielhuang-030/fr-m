@@ -17,24 +17,21 @@ class UserAuth
      */
     public function handle($request, Closure $next)
     {
-        if (! Auth::check()) {
+        if (!auth()->check()) {
 
-            $url = route('login') . '?redirect_url=' . url()->current();
-
+            $url = route('login', [
+                'redirect_url' => url()->current(),
+            ]);
 
             if ($request->ajax()) {
-
                 return response()->json([
                     'code' => 301,
-                    'msg'  => '请登录账号再操作',
+                    'msg'  => 'Please login first',
                     'data'  => $url,
                 ]);
             }
-
-            return redirect($url)->with('status', '请登录账号再操作');
+            return redirect($url)->with('status', 'Please login first');
         }
-
-
         return $next($request);
     }
 }
