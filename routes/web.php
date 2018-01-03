@@ -57,10 +57,10 @@ Route::group([
         Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
 
         Route::post('/pay', 'CheckoutsController@pay')->name('checkout.pay');
+        Route::get('/order/{id}', 'CheckoutsController@order')->middleware(['user.auth'])->name('checkout.order');
     });
 
-    // order
-    Route::get('/order/{id}', 'CheckoutsController@order')->middleware(['user.auth'])->name('checkout.order');
+
 
     // webhook
     Route::post('/webhook/{id}', 'PaymentsController@webhook')->name('webhook');

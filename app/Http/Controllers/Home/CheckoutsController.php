@@ -79,7 +79,7 @@ class CheckoutsController extends Controller
     }
 
     /**
-     * checkout
+     * index
      */
     public function index()
     {
@@ -97,6 +97,9 @@ class CheckoutsController extends Controller
         return view('home.checkouts.index', compact('user', 'address', 'states'));
     }
 
+    /**
+     * cart (AJAX)
+     */
     public function cart()
     {
         $items = $this->cartService->getItems();
@@ -106,6 +109,9 @@ class CheckoutsController extends Controller
         return view('home.checkouts.cart', compact('items', 'conditions', 'subTotal', 'total'));
     }
 
+    /**
+     * tax (AJAX)
+     */
     public function tax(Request $request)
     {
         $stateId = (int) $request->input('id', 0);
@@ -114,6 +120,11 @@ class CheckoutsController extends Controller
         return response()->json($this->response);
     }
 
+    /**
+     * pay (AJAX)
+     *
+     * @param Request $request
+     */
     public function pay(Request $request)
     {
         $orderId = $this->checkoutService->pay($request->all(), (int) auth()->id());
@@ -128,10 +139,14 @@ class CheckoutsController extends Controller
         return response()->json($this->response);
     }
 
+    /**
+     * order
+     *
+     * @param Request $request
+     */
     public function order(Request $request)
     {
         $order = $this->order;
-        dd($order);
         return view('home.checkouts.order', compact('order'));
     }
 
