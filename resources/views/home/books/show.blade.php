@@ -194,13 +194,7 @@
             <div class="footer">
                 <div class="footer-hd">
                     <p>
-                        <a href="#">星期一商城</a>
-                        <b>|</b>
-                        <a href="#">商城首页</a>
-                        <b>|</b>
-                        <a href="#">支付宝</a>
-                        <b>|</b>
-                        <a href="#">物流</a>
+                        <a href="{{ url('/') }}">Home</a>
                     </p>
                 </div>
                 @include('common.home.footer')
