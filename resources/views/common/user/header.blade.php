@@ -11,7 +11,7 @@
                         <div class="menu-hd MyShangcheng"><a href="{{ url('/user') }}" target="_top"><i class="am-icon-user am-icon-fw"></i>Member</a></div>
                     </div>
                     <div class="topMessage mini-cart">
-                        <div class="menu-hd"><a id="mc-menu-hd" href="{{ url('/home/cars') }}" target="_top"><i class="am-icon-shopping-cart  am-icon-fw"></i><span>Cart</span><strong id="J_MiniCartNum" class="h">0</strong></a></div>
+                        <div class="menu-hd"><a id="mc-menu-hd" href="{{ url('/cart') }}" target="_top"><i class="am-icon-shopping-cart  am-icon-fw"></i><span>Cart</span><strong id="J_MiniCartNum" class="h">0</strong></a></div>
                     </div>
                     <?php /*
                     <div class="topMessage favorite">
