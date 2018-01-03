@@ -15,16 +15,6 @@ Route::group([
         Route::get('/again/send/{id}', 'UserController@sendActiveMail');
     });
 
-    /*
-    // github,qq,weibo authorize login
-    Route::get('/auth/github', 'AuthLoginController@redirectToGithub');
-    Route::get('/auth/github/callback', 'AuthLoginController@handleGithubCallback');
-    Route::get('/auth/qq', 'AuthLoginController@redirectToQQ');
-    Route::get('/auth/qq/callback', 'AuthLoginController@handleQQCallback');
-    Route::get('/auth/weibo', 'AuthLoginController@redirectToWeibo');
-    Route::get('/auth/weibo/callback', 'AuthLoginController@handleWeiboCallback');
-    */
-
     // logout
     Route::get('logout', 'LoginController@logout')->name('logout');
 });
@@ -66,19 +56,14 @@ Route::group([
         Route::get('/cart', 'CheckoutsController@cart')->name('checkout.cart');
         Route::get('/tax', 'CheckoutsController@tax')->name('checkout.tax');
 
-        Route::post('/order', 'CheckoutsController@order')->name('checkout.order');
+        Route::post('/pay', 'CheckoutsController@pay')->name('checkout.pay');
     });
 
-    // payment
-    // Route::middleware(['user.auth'])->get('/payment', 'PaymentsController@index')->name('payment');
-    Route::get('/payment', 'PaymentsController@index')->name('payment');
-    Route::post('/webhook/{gateway_id}', 'PaymentsController@webhook')->name('webhook');
+    // order
+    Route::get('/order/{id}', 'CheckoutsController@order')->middleware(['user.auth'])->name('checkout.order');
 
-    // test
-    Route::prefix('payment')->group(function() {
-        Route::get('/test', 'PaymentsController@test');
-        Route::get('/check', 'PaymentsController@check');
-    });
+    // webhook
+    Route::post('/webhook/{id}', 'PaymentsController@webhook')->name('webhook');
 
 });
 

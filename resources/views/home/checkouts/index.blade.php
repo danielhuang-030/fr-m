@@ -2,7 +2,7 @@
 
 @section('main')
 
-<form action="{{ route('checkout.order') }}" method="POST">
+<form action="{{ route('checkout.pay') }}" method="POST">
 {{ csrf_field() }}
 <input name="order_id" type="hidden" />
     <main id="mainContent" class="main-content">
