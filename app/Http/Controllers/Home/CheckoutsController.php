@@ -22,7 +22,18 @@ class CheckoutsController extends Controller
      */
     protected $cartService;
 
+    /**
+     * CheckoutService
+     *
+     * @var CheckoutService
+     */
     protected $checkoutService;
+
+    /**
+     *
+     * @var type
+     */
+    protected $order;
 
     /**
      * construct
@@ -49,6 +60,22 @@ class CheckoutsController extends Controller
                 'index',
             ]
         ]);
+
+        // check order exist, owner
+        $this->middleware(function($request, $next) {
+            $orderId = (int) $request->route('id');
+            $userId = (int) auth()->id();
+            $this->order = $this->checkoutService->getOrder($orderId);
+            if (null === $this->order || (int) $this->order->user_id !== $userId) {
+                return redirect(url('/'));
+            }
+            return $next($request);
+        }, [
+            'only' => [
+                'order',
+            ]
+        ]);
+
     }
 
     /**
@@ -87,9 +114,9 @@ class CheckoutsController extends Controller
         return response()->json($this->response);
     }
 
-    public function order(Request $request)
+    public function pay(Request $request)
     {
-        $orderId = $this->checkoutService->order($request->all(), (int) auth()->id());
+        $orderId = $this->checkoutService->pay($request->all(), (int) auth()->id());
         $errorMessage = $this->checkoutService->getErrorMessage();
         if (0 === $orderId || !empty($errorMessage)) {
             $this->response['code'] = 403;
@@ -99,6 +126,13 @@ class CheckoutsController extends Controller
         }
         $this->response['data'] = $orderId;
         return response()->json($this->response);
+    }
+
+    public function order(Request $request)
+    {
+        $order = $this->order;
+        dd($order);
+        return view('home.checkouts.order', compact('order'));
     }
 
 }
