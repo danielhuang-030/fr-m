@@ -10,23 +10,58 @@ use App\Mail\UserCreateWhenCheckout;
 
 class CheckoutService
 {
+    /**
+     * CartService
+     *
+     * @var CartService
+     */
     protected $cartService;
+
+    /**
+     * PaymentService
+     *
+     * @var PaymentService
+     */
     protected $paymentService;
 
+    /**
+     * error message
+     *
+     * @var string
+     */
     protected $errorMessage;
 
+    /**
+     * construct
+     *
+     * @param CartService $cartService
+     * @param PaymentService $paymentService
+     */
     public function __construct(CartService $cartService, PaymentService $paymentService)
     {
         $this->cartService = $cartService;
         $this->paymentService = $paymentService;
     }
 
+    /**
+     * get error message
+     *
+     * @return string
+     */
     public function getErrorMessage()
     {
         return $this->errorMessage;
     }
 
-    public function order(array $inputData = [], int $userId = 0)
+    /**
+     * pay
+     * 
+     * @param array $inputData
+     * @param int $userId
+     * @return int
+     * @throws \Exception
+     */
+    public function pay(array $inputData = [], int $userId = 0)
     {
         if (empty($inputData)) {
             return 0;
@@ -47,8 +82,7 @@ class CheckoutService
 
         // create order
         $orderId = (int) $inputData['order_id'] ?? 0;
-        $model = new \App\Models\Order();
-        $order = $model->with(['statuses', 'fees', 'details', 'shippingState', 'billingState'])->find($orderId);
+        $order = $this->getOrder($orderId);
         if (null === $order) {
             DB::beginTransaction();
             try {
@@ -90,7 +124,7 @@ class CheckoutService
                     // add order details
                     $orderDetail = new \App\Models\OrderDetail();
                     $orderDetail->order_id = $orderId;
-                    $orderDetail->book_id = $item->id;
+                    $orderDetail->book_id = $item->attributes->id;
                     $orderDetail->title = $item->name;
                     $orderDetail->condition = $item->attributes->condition;
                     $orderDetail->quantity = $item->quantity;
@@ -168,11 +202,10 @@ class CheckoutService
     /**
      * create user by email
      *
-     * @todo send email
      * @param string $email
      * @return \App\Models\User
      */
-    public function createUserByEmail(string $email = '')
+    protected function createUserByEmail(string $email = '')
     {
         if (empty($email)) {
             return null;
@@ -199,6 +232,25 @@ class CheckoutService
         Mail::to($user->email)->send((new UserCreateWhenCheckout($user))->with('password', $password));
 
         return $user;
+    }
+
+    /**
+     * get order
+     *
+     * @param int $orderId
+     * @return \App\Models\Order
+     */
+    public function getOrder(int $orderId)
+    {
+        $model = new \App\Models\Order();
+        return $model->with([
+            'statuses',
+            'fees',
+            'details',
+            'shippingState',
+            'billingState',
+            'tracks',
+        ])->find($orderId);
     }
 
 }
