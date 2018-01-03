@@ -6,18 +6,66 @@ use DB;
 
 abstract class Gateway
 {
+    /**
+     * Gateway
+     *
+     * @var \App\Models\Gateway
+     */
     protected $gateway;
+
+    /**
+     * User
+     *
+     * @var \App\Models\User
+     */
     protected $user;
+
+    /**
+     * payment data
+     *
+     * @var array
+     */
     protected $paymentData;
+
+    /**
+     * PaymentProfile
+     *
+     * @var \App\Models\PaymentProfile
+     */
     protected $paymentProfile;
+
+    /**
+     * Transaction
+     *
+     * @var \App\Models\Transaction
+     */
     protected $transaction;
+
+    /**
+     * Charge
+     *
+     * @var \Stripe\Charge
+     */
     protected $charge;
 
+    /**
+     * construct
+     *
+     * @param \App\Models\Gateway $gateway
+     */
     public function __construct(\App\Models\Gateway $gateway)
     {
         $this->gateway = $gateway;
     }
 
+    /**
+     * pay
+     *
+     * @param array $paymentData
+     * @param \App\Models\User $user
+     * @return int
+     * @throws \Exception
+     */
     public function pay(array $paymentData = [], \App\Models\User $user = null)
     {
         $this->user = $user;

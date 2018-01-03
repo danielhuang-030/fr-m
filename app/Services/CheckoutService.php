@@ -55,7 +55,7 @@ class CheckoutService
 
     /**
      * pay
-     * 
+     *
      * @param array $inputData
      * @param int $userId
      * @return int
@@ -186,16 +186,20 @@ class CheckoutService
         // create payment
         try {
             // payment pay
-            $paymentResult = $this->paymentService->pay($paymentData);
+            $transactionId = $this->paymentService->pay($paymentData);
         } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
-            $paymentResult = false;
+            $transactionId = 0;
         }
 
         // order succeed, but payment fail
-        if (!$paymentResult) {
+        if (0 === $transactionId) {
             return $orderId;
         }
+
+        // cart clear
+        $this->cartService->clearAll();
+
         return $orderId;
     }
 

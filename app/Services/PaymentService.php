@@ -4,6 +4,14 @@ namespace App\Services;
 
 class PaymentService
 {
+    /**
+     *
+     * @param array $data
+     * @param string $gatewayName
+     * @return type
+     * @throws Exception
+     * @throws \Exception
+     */
     public function pay(array $data = [], string $gatewayName = '')
     {
         // get user with gateway
@@ -23,12 +31,12 @@ class PaymentService
         }
 
         try {
-            $result = $gateway->pay($data, $user);
+            $transactionId = $gateway->pay($data, $user);
         } catch (\Exception $e) {
             // $result = false;
             throw $e;
         }
-        return $result;
+        return $transactionId;
     }
 
     /**
@@ -69,6 +77,11 @@ class PaymentService
         return new $className($gateway);
     }
 
+    /**
+     * get Gateway by weight
+     *
+     * @return \App\Models\Gateway
+     */
     protected function getGatewayByWeight()
     {
         $model = new \App\Models\Gateway();
@@ -93,7 +106,12 @@ class PaymentService
         return null;
     }
 
-    public function testGatewayWeight($count = 100)
+    /**
+     * test get Gateway by weight
+     * 
+     * @param int $count
+     */
+    public function testGatewayWeight(int $count = 100)
     {
         $result = array();
         for ($i = 0; $i < $count; $i++) {
