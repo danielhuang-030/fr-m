@@ -39,8 +39,5 @@ class UninstallShop extends BaseCommand
         $this->call('key:generate');
         $this->call('gps:clear');
         $this->call('migrate:reset');
-
-        // delete all upload static resources
-        $this->call('gps:delete');
     }
 }
