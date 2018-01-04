@@ -14,34 +14,34 @@ class PermissionsRolesTableSeeder extends Seeder
     public function run()
     {
         // all permissions
-        $admin = Role::where('name', '超级管理员')->first();
+        $admin = Role::where('name', 'admin')->first();
         $this->givePermission($admin, [
-            '添加管理员', '修改管理员', '删除管理员',
-            '添加分类', '修改分类', '删除分类',
-            '添加商品', '修改商品', '删除商品',
-            '添加用户', '修改用户', '删除用户',
+            'add-manager', 'update-manager', 'delete-manager',
+            'add-category', 'update-category', 'delete-category',
+            'add-book', 'update-book', 'delete-book',
+            'add-user', 'update-user', 'delete-user',
         ]);
 
-        $admin = Role::where('name', '管理员')->first();
+        $admin = Role::where('name', 'manager')->first();
         $this->givePermission($admin, [
-            '添加分类', '修改分类', '删除分类',
-            '添加商品', '修改商品', '删除商品',
-            '添加用户', '修改用户', '删除用户',
+            'add-category', 'update-category', 'delete-category',
+            'add-book', 'update-book', 'delete-book',
+            'add-user', 'update-user', 'delete-user',
         ]);
 
-        $admin = Role::where('name', '分类管理员')->first();
+        $admin = Role::where('name', 'category-manager')->first();
         $this->givePermission($admin, [
-            '添加分类', '修改分类', '删除分类',
+            'add-category', 'update-category', 'delete-category',
         ]);
 
-        $admin = Role::where('name', '商品管理员')->first();
+        $admin = Role::where('name', 'book-manager')->first();
         $this->givePermission($admin, [
-            '添加商品', '修改商品', '删除商品',
+            'add-book', 'update-book', 'delete-book',
         ]);
 
-        $admin = Role::where('name', '用户管理员')->first();
+        $admin = Role::where('name', 'user-manager')->first();
         $this->givePermission($admin, [
-            '添加用户', '修改用户', '删除用户',
+            'add-user', 'update-user', 'delete-user',
         ]);
     }
 
