@@ -2,7 +2,6 @@
 
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
-use Faker\Generator as Faker;
 
 class AdminsTableSeeder extends Seeder
 {
@@ -11,16 +10,11 @@ class AdminsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run(Faker $faker)
+    public function run()
     {
         Admin::create([
                 'name' => 'admin',
                 'password' => bcrypt('admin')
-        ]);
-
-        Admin::create([
-            'name' => 'guest',
-            'password' => bcrypt('guest')
         ]);
     }
 }
