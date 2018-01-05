@@ -41,6 +41,7 @@ class InstallShop extends BaseCommand
         $this->call('db:seed');
 
         // create a symbolic link from public/storage to storage/app/public
+        Storage::makeDirectory('public');
         $this->call('storage:link');
     }
 }
